@@ -10,11 +10,11 @@ object QTable {
   /** @return a map from all possible to state to a map of actions to their expected value */
   def createInitializedTable(): Map[TTTBoard, Map[Int, Float]] = {
 
-    val initialBoardState = new TTTBoard(".........")
+    val initialBoardState = TTTBoard(".........")
 
     val table = mutable.Map[TTTBoard, Map[Int, Float]]()
     traverse(initialBoardState, 'X', table)
-    table.map(entry => (entry._1, entry._2)).toMap
+    table.map(entry => (entry._1, entry._2)).toMap // make immutable
   }
 
   /**
@@ -23,8 +23,8 @@ object QTable {
     */
   private def traverse(currentState: TTTBoard, playerToMove: Char,
                        table: mutable.Map[TTTBoard, Map[Int, Float]]): Unit = {
-    if (!table.contains(currentState) && !currentState.isWon) {
-      val moves: Map[Int, Float] = createPossibleMoves(currentState)
+    if (!table.contains(currentState)) {
+      val moves: Map[Int, Float] = if (currentState.isWon) Map() else createPossibleMoves(currentState)
       table(currentState) = moves
       for (position <- moves.keys) {
         val nextPlayerToMove = if (playerToMove == 'X') 'O' else 'X'
@@ -36,7 +36,6 @@ object QTable {
   private def createPossibleMoves(board: TTTBoard): Map[Int, Float] = {
     (for (i <- 0 until 9 if board.state.charAt(i) == '.') yield i -> 0.0f).toMap
   }
-
 }
 
 /**
@@ -55,5 +54,5 @@ class QTable {
 
   var table: Map[TTTBoard, Map[Int, Float]] = createInitializedTable()
 
-
+  override def toString: String = "numEntries=" + table.size + " first 10 entries:\n" + table.take(10).mkString("\n")
 }
