@@ -2,6 +2,8 @@ package com.barrybecker4.qlearning.ttt
 
 import QTable.createInitializedTable
 
+import scala.collection.mutable
+
 
 object QTable {
 
@@ -10,20 +12,31 @@ object QTable {
 
     val initialBoardState = new TTTBoard(".........")
 
-    val table = Map[TTTBoard, Map[Int, Float]]()
-    traverse(initialBoardState, table)
-    table
+    val table = mutable.Map[TTTBoard, Map[Int, Float]]()
+    traverse(initialBoardState, 'X', table)
+    table.map(entry => (entry._1, entry._2)).toMap
   }
 
   /**
     * Recursively traverse all possible board states using DFS.
     * Terminate if come to a win or a position already seen.
     */
-  private def traverse(currentState: TTTBoard, table: Map[TTTBoard, Map[Int, Float]]): Unit = {
+  private def traverse(currentState: TTTBoard, playerToMove: Char,
+                       table: mutable.Map[TTTBoard, Map[Int, Float]]): Unit = {
     if (!table.contains(currentState) && !currentState.isWon) {
-
+      val moves: Map[Int, Float] = createPossibleMoves(currentState)
+      table(currentState) = moves
+      for (position <- moves.keys) {
+        val nextPlayerToMove = if (playerToMove == 'X') 'O' else 'X'
+        traverse(currentState.makeMove(position, playerToMove), nextPlayerToMove, table)
+      }
     }
   }
+
+  private def createPossibleMoves(board: TTTBoard): Map[Int, Float] = {
+    (for (i <- 0 until 9 if board.state.charAt(i) == '.') yield i -> 0.0f).toMap
+  }
+
 }
 
 /**

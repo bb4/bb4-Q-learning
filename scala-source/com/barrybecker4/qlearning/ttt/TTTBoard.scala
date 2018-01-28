@@ -4,9 +4,15 @@ package com.barrybecker4.qlearning.ttt
   * Immutable tic-tac-toe board state and its operations.
   * @param state current state of the board as a string like "X.OOO.X.X"
   */
-class TTTBoard(val state: String) {
+case class TTTBoard(state: String) {
+
+  //private var playerToMove: Char = 'X'
 
   def isWon: Boolean = isWon('X') || isWon('O')
+
+  def makeMove(position: Int, playerToMove: Char): TTTBoard = {
+    TTTBoard(state.substring(0, position) + playerToMove + state.substring(position + 1))
+  }
 
   def isWon(player: Char): Boolean = {
     val winStr = "" + player + player + player
