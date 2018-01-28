@@ -7,7 +7,22 @@ object QTable {
 
   /** @return a map from all possible to state to a map of actions to their expected value */
   def createInitializedTable(): Map[TTTBoard, Map[Int, Float]] = {
-    Map()
+
+    val initialBoardState = new TTTBoard(".........")
+
+    val table = Map[TTTBoard, Map[Int, Float]]()
+    traverse(initialBoardState, table)
+    table
+  }
+
+  /**
+    * Recursively traverse all possible board states using DFS.
+    * Terminate if come to a win or a position already seen.
+    */
+  private def traverse(currentState: TTTBoard, table: Map[TTTBoard, Map[Int, Float]]): Unit = {
+    if (!table.contains(currentState) && !currentState.isWon) {
+
+    }
   }
 }
 
