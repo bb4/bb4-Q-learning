@@ -1,0 +1,21 @@
+description = 'Q-learning Tic Tac Toe'
+group = 'com.barrybecker4'
+version = '0.1-SNAPSHOT'
+
+apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4.gradle'
+
+project.archivesBaseName = 'Q-learning-ttt'
+mainClassName = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
+
+jar {
+    archiveName = "${archivesBaseName}-${version}.jar"
+    manifest {
+        attributes 'Implementation-Title': 'Q-learning Tic-Tac-Toe code',
+                'Implementation-Version': version,
+                'provider': 'gradle',
+                'Main-Class': mainClassName
+    }
+}
+
+// This allows publishing of the A-star library to Sonatype
+apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4-publish.gradle'
