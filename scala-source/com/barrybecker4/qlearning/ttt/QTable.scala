@@ -14,22 +14,20 @@ object QTable {
   /** @return a map from all possible to state to a map of actions to their expected value */
   def createInitializedTable(): Map[TTTBoard, mutable.Map[Int, Float]] = {
     val table = mutable.Map[TTTBoard, mutable.Map[Int, Float]]()
-    traverse(TTTBoard(), 'X', table)
+    traverse(TTTBoard(), table)
     table.map(entry => (entry._1, entry._2)).toMap // make immutable
   }
 
-  /**
-    * Recursively traverse all possible board states using DFS.
+  /** Recursively traverse all possible board states using DFS.
     * Terminate if come to a win or a position already seen.
     */
-  private def traverse(currentState: TTTBoard, playerToMove: Char,
+  private def traverse(currentState: TTTBoard,
                        table: mutable.Map[TTTBoard, mutable.Map[Int, Float]]): Unit = {
     if (!table.contains(currentState)) {
-      val moves = if (currentState.isWon) mutable.Map[Int, Float]() else createPossibleMoves(currentState)
+      val moves = if (currentState.isWonByLastMove) mutable.Map[Int, Float]() else createPossibleMoves(currentState)
       table(currentState) = moves
       for (position <- moves.keys) {
-        val nextPlayerToMove = if (playerToMove == 'X') 'O' else 'X'
-        traverse(currentState.makeMove(position, playerToMove), nextPlayerToMove, table)
+        traverse(currentState.makeMove(position), table)
       }
     }
   }
@@ -55,6 +53,7 @@ object QTable {
   * we need to use a model like a deep neural net to approximate the total space of possible board positions.
   *
   * TODO: pull out to qlearning/common
+  * @author Barry Becker
   */
 class QTable(rnd: Random = RND) {
 
@@ -72,15 +71,13 @@ class QTable(rnd: Random = RND) {
     (idx, actions(idx))
   }
 
-  /**
-    * Update QTable with new knowledge.
+  /** Update QTable with new knowledge.
     * Q[s,a] = Q[s,a] + learningRate*(reward + futureRewardDiscount * max(Q[s1,:]) - Q[s,a])
     */
   def update(b: TTTBoard, action: (Int, Float), nextBoard: TTTBoard, reward: Float,
              learningRate: Float, futureRewardDiscount: Float = 1.0f): Unit = {
     val actions = table(nextBoard)
-    val futureValue =
-      if (actions.isEmpty) 0.0f else actions.values.max
+    val futureValue = if (actions.isEmpty) 0.0f else actions.values.max
     val newValue = action._2 + learningRate * ((reward + futureRewardDiscount * futureValue) - action._2)
     table(b) += (action._1 -> newValue)
 //    if (newValue != 0.0f && Math.abs(newValue) != 1.0) {
@@ -89,7 +86,14 @@ class QTable(rnd: Random = RND) {
   }
 
   // for testing only
-  def getActions(b: TTTBoard): mutable.Map[Int, Float] = table(b)
+  def getActions(b: TTTBoard): mutable.Map[Int, Float] = {
+    if (!table.contains(b))
+      println("could not find " +b.toString + " among " + table.keys.mkString("\n"))
+    table(b)
+  }
 
+  def getFirstNEntriesWithNon0Actions(n: Int): String = {
+    table.filter(e => e._2.values.sum > 0.0f).take(n).mkString(", ")
+  }
   override def toString: String = "numEntries=" + table.size + " first 10 entries:\n" + table.take(10).mkString("\n")
 }
