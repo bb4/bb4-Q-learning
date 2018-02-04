@@ -9,11 +9,12 @@ object QTable {
 
   val RND = new Random(0)
 
-  /** There is always at least this probability that a random move will be selected */
-  val EPS = 0.1
+  /** There is always at least this probability that a random move will be selected.
+    * Values betwee 0.01 and 0.1 are good, but more experimentation needed. */
+  val EPS = 0.02
 
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
-  val EPS_DROPOFF = 5.0f
+  val EPS_DROPOFF = 1.0f
 
   /** @return a map from all possible states to a map of possible actions to their expected value */
   def createInitializedTable(): Map[TTTBoard, mutable.Map[Int, Float]] = {
@@ -56,6 +57,8 @@ object QTable {
   * For Tic Tac Toe, the number of possible board states is about 5,478 - far fewer than most games.
   * Since the size of the space is small, we can use a table, but for more complex games, like go for example,
   * we need to use a model like a deep neural net to approximate the total space of possible board positions.
+  *
+  * Currently the size of the table is 5,478, but could be reduced by a factor of 8 by taking advantage of symmetry.
   *
   * TODO: make generic and pull out to qlearning/common
   * @author Barry Becker

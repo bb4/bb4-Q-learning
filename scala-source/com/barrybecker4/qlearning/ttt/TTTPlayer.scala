@@ -21,7 +21,7 @@ class TTTPlayer {
   private val scanner = new Scanner(System.in)
 
   def playGameAgainstHuman(): Unit = {
-    learner.learn(table, 100000)
+    learner.learn(table, 10000)
     println("top "+ table.getFirstNEntriesWithNon0Actions(20))
     println("actions for " + "....X.... are "  + table.getActions(TTTBoard("....X....", 'O')).mkString(", "))
 
@@ -39,7 +39,7 @@ class TTTPlayer {
       if (state.playerToMove == 'X') {
         println("move position [1 - 9]?")
         var pos = scanner.nextInt()
-        while (pos < 1 && pos > 9) {
+        while (pos < 1 || pos > 9 || state.playedAlready(pos - 1)) {
           println("Invalid. Try again.")
           pos = scanner.nextInt()
         }

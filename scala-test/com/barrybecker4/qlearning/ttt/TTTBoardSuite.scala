@@ -2,6 +2,8 @@ package com.barrybecker4.qlearning.ttt
 
 import org.scalatest.FunSuite
 
+import scala.util.Random
+
 
 class TTTBoardSuite extends FunSuite {
 
@@ -96,5 +98,26 @@ class TTTBoardSuite extends FunSuite {
     assertResult(0f) {b.rewardForLastMove}
     b = b.makeMove(8)
     assertResult(-1.0f) {b.rewardForLastMove}
+  }
+
+  test("select best move for O") {
+    val b = TTTBoard("OX.XOX...", 'O')
+    val actionsList: Seq[(Int, Float)] = Seq((3, 0.5f), (5, 0.4f))
+    val best = b.selectBestAction(actionsList, new Random(1))
+    assertResult((5, 0.4f)) { best }
+  }
+
+  test("select best move for X") {
+    val b = TTTBoard("OX.XOX...", 'X')
+    val actionsList: Seq[(Int, Float)] = Seq((3, 0.5f), (5, 0.4f))
+    val best = b.selectBestAction(actionsList, new Random(1))
+    assertResult((3, 0.5f)) { best }
+  }
+
+  test("played already when played") {
+    assertResult(true) {TTTBoard("OX.XOX...", 'X').playedAlready(1)}
+  }
+  test("played already when available") {
+    assertResult(false) {TTTBoard("OX.XOX...", 'X').playedAlready(2)}
   }
 }

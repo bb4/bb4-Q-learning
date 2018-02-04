@@ -8,13 +8,6 @@ object QLearner {
 
   /** This can be 1 since it is a game of perfect information. If there were randomness, it should be less than 1 */
   val DEFAULT_FUTURE_REWARD_DISCOUNT = 1.0f
-
-  def main(args:Array[String]) {
-    val learner = new QLearner()
-    val qtable = new QTable()
-    learner.learn(qtable)
-    println("after learning qtable = " + qtable.toString)
-  }
 }
 
 /**

@@ -13,6 +13,7 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') {
   def isWon: Boolean = isWon('X') || isWon('O')
   def hasMoves: Boolean = state.contains('.') && !isWon
   def isWonByLastMove: Boolean = isWon(nextPlayerToMove)
+  def playedAlready(pos: Int): Boolean = state.charAt(pos) != '.'
 
   def makeMove(position: Int): TTTBoard = {
     val newState = state.substring(0, position) + playerToMove + state.substring(position + 1)
