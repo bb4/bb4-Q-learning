@@ -49,54 +49,54 @@ class TTTBoardSuite extends FunSuite {
 
   test("make move X") {
     val b = TTTBoard("XO.O.O.XX", 'X')
-    assertResult("XOX\nO.O\n.XX") {b.makeMove(2).toString}
+    assertResult("XOX\nO.O\n.XX") {b.makeTransition(2).toString}
   }
 
   test("make move O") {
     val b = TTTBoard("XO.O.O.XX", 'O')
-    assertResult("XOO\nO.O\n.XX") {b.makeMove(2).toString}
+    assertResult("XOO\nO.O\n.XX") {b.makeTransition(2).toString}
   }
 
   test("isWonByLastMove when won") {
     var b = TTTBoard("XO.O.O.XX", 'X')
-    b = b.makeMove(4)
+    b = b.makeTransition(4)
     assertResult(true) {b.isWonByLastMove}
   }
 
   test("isWonByLastMove when not won") {
     var b = TTTBoard("XO.O.O.XX", 'X')
-    b = b.makeMove(2)
+    b = b.makeTransition(2)
     assertResult(false) {b.isWonByLastMove}
   }
 
   test("hasMoves when some") {
     var b = TTTBoard("OX.XXO...", 'O')
-    assertResult(true) {b.hasMoves}
+    assertResult(true) {b.hasTransitions}
   }
 
   test("hasMoves when none") {
     var b = TTTBoard("OXOXXOOOX", 'O')
-    assertResult(false) {b.hasMoves}
+    assertResult(false) {b.hasTransitions}
   }
 
   test("getReward when not won") {
     var b = TTTBoard("OX.XXO...", 'O')
     assertResult(0f) {b.rewardForLastMove}
-    b.makeMove(2)
+    b.makeTransition(2)
     assertResult(0f) {b.rewardForLastMove}
   }
 
   test("getReward when X won") {
     var b = TTTBoard("OX.XXO...", 'X')
     assertResult(0f) {b.rewardForLastMove}
-    b = b.makeMove(7)
+    b = b.makeTransition(7)
     assertResult(1.0f) {b.rewardForLastMove}
   }
 
   test("getReward when O won") {
     var b = TTTBoard("OX.XOX...", 'O')
     assertResult(0f) {b.rewardForLastMove}
-    b = b.makeMove(8)
+    b = b.makeTransition(8)
     assertResult(-1.0f) {b.rewardForLastMove}
   }
 

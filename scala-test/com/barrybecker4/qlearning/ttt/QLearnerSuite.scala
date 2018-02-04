@@ -2,17 +2,18 @@ package com.barrybecker4.qlearning.ttt
 
 import org.scalatest.FunSuite
 import TestHelper._
+import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 
 class QLearnerSuite extends FunSuite {
 
-  val learner = new QLearner()
-  val qtable = new QTable(epsilon = 0.1)
+  val learner = new QLearner[Int]()
+  val qtable = new QTable(TTTBoard(), epsilon = 0.1)
   learner.learn(qtable, 200000)
 
   test("Learning short, epsilon - 0.01") {
-    val learner = new QLearner()
-    val qtable = new QTable(epsilon = 0.01)    // 0.01 likely too small
+    val learner = new QLearner[Int]()
+    val qtable = new QTable(TTTBoard(), epsilon = 0.01)    // 0.01 likely too small
 
     learner.learn(qtable, 20000)
 
@@ -52,8 +53,8 @@ class QLearnerSuite extends FunSuite {
   }
 
   test("Learning short, epsilon - 0.1") {
-    val learner = new QLearner()
-    val qtable = new QTable(epsilon = 0.1)
+    val learner = new QLearner[Int]()
+    val qtable = new QTable(TTTBoard(), epsilon = 0.1)
 
     learner.learn(qtable, 20000)
 
@@ -93,8 +94,8 @@ class QLearnerSuite extends FunSuite {
   }
 
   test("Learning short, epsilon - 0.2") {
-    val learner = new QLearner()
-    val qtable = new QTable(epsilon = 0.2)  // 0.2 is too big
+    val learner = new QLearner[Int]()
+    val qtable = new QTable(TTTBoard(), epsilon = 0.2)  // 0.2 is too big
 
     learner.learn(qtable, 20000)
 
@@ -214,9 +215,9 @@ class QLearnerSuite extends FunSuite {
     }
   }
 
-  /** .X.
-    * X..
-    * .OO
+  /**   .X.
+    *   X..
+    *   .OO
     */
   test("check actions when X can set up a 2 way win or block") {
     assertResult("2 -> -0.64000005, 5 -> -0.76800007, 4 -> -0.76800007, 6 -> 0.9999578, 0 -> 0.0") {

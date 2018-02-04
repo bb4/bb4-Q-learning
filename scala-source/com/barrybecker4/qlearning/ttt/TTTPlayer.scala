@@ -1,6 +1,8 @@
 package com.barrybecker4.qlearning.ttt
 
 import java.util.Scanner
+import com.barrybecker4.qlearning.common.{QLearner, QTable}
+
 
 object TTTPlayer {
   def main(args:Array[String]) {
@@ -10,14 +12,13 @@ object TTTPlayer {
   }
 }
 
-/**
-  * Text based tic-tac-toe player.
+/** Text based tic-tac-toe player.
   * First learn, then play.
   */
 class TTTPlayer {
 
-  private val table = new QTable(epsilon = 0.05)
-  private val learner = new QLearner()
+  private val table = new QTable(TTTBoard(), epsilon = 0.05)
+  private val learner = new QLearner[Int]()
   private val scanner = new Scanner(System.in)
 
   def playGameAgainstHuman(): Unit = {
@@ -33,7 +34,7 @@ class TTTPlayer {
   private def playTheGame(): TTTBoard = {
     var state: TTTBoard = TTTBoard()
 
-    while (!state.isWonByLastMove && state.hasMoves) {
+    while (!state.isWonByLastMove && state.hasTransitions) {
       println("--------")
       println(state.toString)
       if (state.playerToMove == 'X') {
@@ -44,9 +45,9 @@ class TTTPlayer {
           pos = scanner.nextInt()
         }
 
-        state = state.makeMove(pos - 1)
+        state = state.makeTransition(pos - 1)
       } else {
-        state = state.makeMove(table.getBestMove(state)._1)
+        state = state.makeTransition(table.getBestMove(state)._1)
       }
     }
     state

@@ -1,21 +1,23 @@
 package com.barrybecker4.qlearning.ttt
 
+import com.barrybecker4.qlearning.common.State
+
 import scala.util.Random
 
 /**
   * Immutable tic-tac-toe board state and its operations.
-  *
+  * Currently the size of the QTable is 5,478, but could be reduced by a factor of 8 by taking advantage of symmetry.
   * @param state current state of the board as a string like "X.OOO.X.X"
   * @author Barry Becker
   */
-case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') {
+case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') extends State[Int]{
 
   def isWon: Boolean = isWon('X') || isWon('O')
-  def hasMoves: Boolean = state.contains('.') && !isWon
+  def hasTransitions: Boolean = state.contains('.') && !isWon
   def isWonByLastMove: Boolean = isWon(nextPlayerToMove)
   def playedAlready(pos: Int): Boolean = state.charAt(pos) != '.'
 
-  def makeMove(position: Int): TTTBoard = {
+  def makeTransition(position: Int): TTTBoard = {
     val newState = state.substring(0, position) + playerToMove + state.substring(position + 1)
     TTTBoard(newState, nextPlayerToMove)
   }
@@ -29,6 +31,11 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') {
     }
     if (checkForWin(winStr, 0, 4, 8)) return true
     checkForWin(winStr, 2, 4, 6)
+  }
+
+  def getLegalTransitions: Seq[Int] = {
+    if (isWonByLastMove) Seq()
+    else for (i <- 0 until 9 if state.charAt(i) == '.') yield i
   }
 
   def rewardForLastMove: Float = {
