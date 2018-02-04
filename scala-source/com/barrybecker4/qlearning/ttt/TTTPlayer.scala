@@ -16,7 +16,7 @@ object TTTPlayer {
   */
 class TTTPlayer {
 
-  private val table = new QTable()
+  private val table = new QTable(epsilon = 0.05)
   private val learner = new QLearner()
   private val scanner = new Scanner(System.in)
 
@@ -63,6 +63,5 @@ class TTTPlayer {
     else {
       println("*** A tie! ****")
     }
-
   }
 }

@@ -11,10 +11,10 @@ object QTable {
 
   /** There is always at least this probability that a random move will be selected.
     * Values betwee 0.01 and 0.1 are good, but more experimentation needed. */
-  val EPS = 0.02
+  val DEFAULT_EPS = 0.1
 
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
-  val EPS_DROPOFF = 1.0f
+  val EPS_DROPOFF = 5.0f
 
   /** @return a map from all possible states to a map of possible actions to their expected value */
   def createInitializedTable(): Map[TTTBoard, mutable.Map[Int, Float]] = {
@@ -61,9 +61,11 @@ object QTable {
   * Currently the size of the table is 5,478, but could be reduced by a factor of 8 by taking advantage of symmetry.
   *
   * TODO: make generic and pull out to qlearning/common
+  * @param epsilon percent of the time to make a random move instead of make the best one as indicated by the model.
+  * @param rnd used for deterministic unit tests
   * @author Barry Becker
   */
-class QTable(rnd: Random = RND) {
+class QTable(epsilon: Double = DEFAULT_EPS, rnd: Random = RND) {
 
   var table: Map[TTTBoard, mutable.Map[Int, Float]] = createInitializedTable()
 
@@ -85,7 +87,7 @@ class QTable(rnd: Random = RND) {
     val actionList: List[(Int, Float)] =
       actions.toList.map(entry => (entry._1, entry._2))
 
-    val eps = EPS + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
+    val eps = epsilon + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
     val selectedAction = if (rnd.nextDouble() < eps) {
       actionList(rnd.nextInt(actionList.length)) // purely random action
     } else {
