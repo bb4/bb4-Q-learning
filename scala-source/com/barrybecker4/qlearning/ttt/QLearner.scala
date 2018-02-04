@@ -22,6 +22,7 @@ object QLearner {
   * correct values can be assigned to next move.
   * See https://en.wikipedia.org/wiki/Q-learning and
   * https://medium.com/emergent-future/simple-reinforcement-learning-with-tensorflow-part-0-q-learning-with-tables-and-neural-networks-d195264329d0
+  * https://www.cs.rochester.edu/u/kautz/Courses/242spring2014/242ai20-reinforcement-learning.pdf
   *
   * TODO: generify pull out to qlearning/common
   * @author Barry Becker
@@ -29,8 +30,7 @@ object QLearner {
 case class QLearner(learningRate: Float = DEFAULT_LEARNING_RATE,
                     futureRewardDiscount: Float = DEFAULT_FUTURE_REWARD_DISCOUNT) {
 
-  /**
-    * @param qtable the qtable to optimize
+  /** @param qtable the qtable to optimize
     * @param numEpisodes number of training games to play
     */
   def learn(qtable: QTable, numEpisodes: Int = 1000): Unit = {
@@ -39,7 +39,7 @@ case class QLearner(learningRate: Float = DEFAULT_LEARNING_RATE,
       while (b.hasMoves) {
         val action = qtable.getNextAction(b, i)
         val nextBoard = b.makeMove(action._1)
-        qtable.update(b, action, nextBoard, nextBoard.rewardForLastMove, learningRate, futureRewardDiscount)
+        qtable.update(b, action, nextBoard, learningRate, futureRewardDiscount)
         b = nextBoard
       }
     }

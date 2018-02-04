@@ -2,6 +2,8 @@ package com.barrybecker4.qlearning.ttt
 
 import org.scalatest.FunSuite
 import com.barrybecker4.qlearning.ttt.TestHelper._
+
+import scala.collection.mutable
 import scala.util.Random
 
 class QTableSuite extends FunSuite {
@@ -9,37 +11,7 @@ class QTableSuite extends FunSuite {
   test("QTable init") {
     val qtable = new QTable
 
-    assertResult(strip("""numEntries=5478 first 10 entries:
-         |X.X
-         |O.O
-         |.X. -> Map(8 -> 0.0, 4 -> 0.0, 1 -> 0.0, 6 -> 0.0)
-         |XXO
-         |.OO
-         |.X. -> Map(8 -> 0.0, 3 -> 0.0, 6 -> 0.0)
-         |OXX
-         |X..
-         |OOX -> Map(5 -> 0.0, 4 -> 0.0)
-         |.XO
-         |XOO
-         |X.X -> Map(7 -> 0.0, 0 -> 0.0)
-         |XO.
-         |.XX
-         |OOX -> Map()
-         |.XX
-         |.XO
-         |OOX -> Map(3 -> 0.0, 0 -> 0.0)
-         |.X.
-         |XXO
-         |..O -> Map(2 -> 0.0, 7 -> 0.0, 6 -> 0.0, 0 -> 0.0)
-         |..X
-         |X..
-         |O.. -> Map(8 -> 0.0, 5 -> 0.0, 4 -> 0.0, 7 -> 0.0, 1 -> 0.0, 0 -> 0.0)
-         |X.X
-         |..X
-         |O.O -> Map(4 -> 0.0, 7 -> 0.0, 1 -> 0.0, 3 -> 0.0)
-         |O.X
-         |XXX
-         |OO. -> Map()"""))
+    assertResult(strip("""numEntries=5478"""))
     { qtable.toString }
   }
 
@@ -48,8 +20,6 @@ class QTableSuite extends FunSuite {
     val b = TTTBoard("X...O.X..", 'O')
     val actions = qtable.getActions(b)
     assertResult("(8,0.0), (2,0.0), (5,0.0), (7,0.0), (1,0.0), (3,0.0)") {actions.toList.mkString(", ")}
-
-    //getNextMove(b: TTTBoard, episodeNumber: Int)
     assertResult((2, 0.0)) {qtable.getNextAction(b, 0)}
   }
 
@@ -58,9 +28,7 @@ class QTableSuite extends FunSuite {
     val b = TTTBoard("X...O.X..", 'O')
     val actions = qtable.getActions(b)
     assertResult("(8,0.0), (2,0.0), (5,0.0), (7,0.0), (1,0.0), (3,0.0)") {actions.toList.mkString(", ")}
-
-    //getNextMove(b: TTTBoard, episodeNumber: Int)
-    assertResult((8, 0)) {qtable.getNextAction(b, 1)}
+    assertResult((5, 0)) {qtable.getNextAction(b, episodeNumber = 1)}
   }
 
   test("getNextMove medium episode (randomish)") {
@@ -68,9 +36,7 @@ class QTableSuite extends FunSuite {
     val b = TTTBoard("X...O.X..", 'O')
     val actions = qtable.getActions(b)
     assertResult("(8,0.0), (2,0.0), (5,0.0), (7,0.0), (1,0.0), (3,0.0)") {actions.toList.mkString(", ")}
-
-    //getNextMove(b: TTTBoard, episodeNumber: Int)
-    assertResult((8, 0.0)) {qtable.getNextAction(b, 10)}
+    assertResult((5, 0.0)) {qtable.getNextAction(b, episodeNumber = 10)}
   }
 
   test("getNextMove high episode (not random)") {
@@ -78,8 +44,18 @@ class QTableSuite extends FunSuite {
     val b = TTTBoard("X...O.X..", 'O')
     val actions = qtable.getActions(b)
     assertResult("(8,0.0), (2,0.0), (5,0.0), (7,0.0), (1,0.0), (3,0.0)") {actions.toList.mkString(", ")}
-
-    //getNextMove(b: TTTBoard, episodeNumber: Int)
-    assertResult((8, 0.0)) {qtable.getNextAction(b, 100)}
+    assertResult((5, 0.0)) {qtable.getNextAction(b, 100)}
   }
+
+  /*
+  test("getNextMove actions with values") {
+    val actions = mutable.Map(8 -> 0.1f, 2 -> 0.2f, 5 -> 0.3f, 7 -> 0.8f, 1 -> 0.11f, 3 -> 0.12f)
+    val rnd = new Random(2L)
+    val episodes = Seq(0, 1, 2, 3, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500)
+    val actResults = episodes.map(e => QTable.getNextAction(actions, e, rnd))
+
+    assertResult(strip("""(5,0.3), (8,0.1), (7,0.8), (7,0.8), (5,0.3), (7,0.8), (7,0.8), (1,0.11), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8), (7,0.8)""")) {
+      actResults.mkString(", ")
+    }
+  }*/
 }

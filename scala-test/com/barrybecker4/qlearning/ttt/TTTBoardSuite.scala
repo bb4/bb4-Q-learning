@@ -88,13 +88,13 @@ class TTTBoardSuite extends FunSuite {
     var b = TTTBoard("OX.XXO...", 'X')
     assertResult(0f) {b.rewardForLastMove}
     b = b.makeMove(7)
-    assertResult(-1.0f) {b.rewardForLastMove}
+    assertResult(1.0f) {b.rewardForLastMove}
   }
 
   test("getReward when O won") {
     var b = TTTBoard("OX.XOX...", 'O')
     assertResult(0f) {b.rewardForLastMove}
     b = b.makeMove(8)
-    assertResult(1.0f) {b.rewardForLastMove}
+    assertResult(-1.0f) {b.rewardForLastMove}
   }
 }
