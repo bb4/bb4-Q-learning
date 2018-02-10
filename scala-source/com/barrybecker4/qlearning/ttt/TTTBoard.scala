@@ -1,7 +1,6 @@
 package com.barrybecker4.qlearning.ttt
 
 import com.barrybecker4.qlearning.common.State
-
 import scala.util.Random
 
 /** Immutable tic-tac-toe board state and its operations.
