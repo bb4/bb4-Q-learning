@@ -11,18 +11,15 @@ object QLearner {
   val DEFAULT_FUTURE_REWARD_DISCOUNT = 1.0f
 }
 
-/**
-  * Given a QTable, play lots of episodes in order to train the table so that
+/** Given a QTable, play lots of episodes in order to train the table so that
   * correct values can be assigned to next move.
   * See https://en.wikipedia.org/wiki/Q-learning and
   * https://medium.com/emergent-future/simple-reinforcement-learning-with-tensorflow-part-0-q-learning-with-tables-and-neural-networks-d195264329d0
   * https://www.cs.rochester.edu/u/kautz/Courses/242spring2014/242ai20-reinforcement-learning.pdf
-  *
-  * TODO: generify pull out to qlearning/common
   * @author Barry Becker
   */
 case class QLearner[T](learningRate: Float = DEFAULT_LEARNING_RATE,
-                    futureRewardDiscount: Float = DEFAULT_FUTURE_REWARD_DISCOUNT) {
+                       futureRewardDiscount: Float = DEFAULT_FUTURE_REWARD_DISCOUNT) {
 
   /** @param qtable the qtable to optimize
     * @param numEpisodes number of training games to play

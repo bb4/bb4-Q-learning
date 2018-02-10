@@ -7,6 +7,7 @@ import scala.util.Random
 
 object QTable {
 
+  /** The seed will be set in unit tests so things are deterministic, but normally we don't care */
   val RND = new Random(0)
 
   /** There is always at least this probability that a random move will be selected.
@@ -17,20 +18,15 @@ object QTable {
   val EPS_DROPOFF = 5.0f
 }
 
-/**
-  * Map from board states to possible moves and their values.
-  * For example, the current board state might be "X.O.XO..X".
-  * Since there are more X's than O's, it has to be O's turn.
-  * The possible moves are 1, 3, 6, or 7 corresponding to the indices of the empty positions.
-  * For each of those moves, there will be a floating point number which is an estimate of the value
+/** Map from states to possible moves and their values.
+  * For each move transition, there will be a floating point number which is an estimate of the value
   * of making that particular move. Initially all those values are 0.
   *
-  * For Tic Tac Toe, the number of possible board states is about 5,478 - far fewer than most games.
-  * Since the size of the space is small, we can use a table, but for more complex games, like go for example,
-  * we need to use a model like a deep neural net to approximate the total space of possible board positions.
+  * A Qtable works well when the size of the space is relatively small, but for more complex games and puzzles,
+  * like go for example, we need to use a model like a deep neural net to approximate the total space.
   *
   * @param initialState the initial state of the game (or whatever)
-  * @param epsilon percent of the time to make a random move instead of make the best one as indicated by the model.
+  * @param epsilon percent of the time to make a random transition instead of make the best one
   * @param rnd used for deterministic unit tests.
   * @author Barry Becker
   */

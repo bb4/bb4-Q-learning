@@ -23,14 +23,11 @@ class TTTPlayer {
 
   def playGameAgainstHuman(): Unit = {
     learner.learn(table, 10000)
-    println("top "+ table.getFirstNEntriesWithNon0Actions(20))
-    println("actions for " + "....X.... are "  + table.getActions(TTTBoard("....X....", 'O')).mkString(", "))
-
     val finalState = playTheGame()
     showOutcome(finalState)
   }
 
-  /** @return the finale game state when no moves left */
+  /** @return the final game state when no moves left */
   private def playTheGame(): TTTBoard = {
     var state: TTTBoard = TTTBoard()
 

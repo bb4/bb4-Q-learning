@@ -10,6 +10,7 @@ trait State[T] {
   /** Apply a transition to this state to make a new one */
   def makeTransition(transition: T): State[T]
 
+  /** all legal transitions from the current state */
   def getLegalTransitions: Seq[T]
 
   /** @return the amount of reward for the transition to this state */
@@ -17,6 +18,4 @@ trait State[T] {
 
   /** @return the best action to take */
   def selectBestAction(actionList: Seq[(T, Float)], rnd: Random): (T, Float)
-
 }
-
