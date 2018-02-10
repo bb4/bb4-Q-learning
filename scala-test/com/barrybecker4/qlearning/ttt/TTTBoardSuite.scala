@@ -115,9 +115,9 @@ class TTTBoardSuite extends FunSuite {
   }
 
   test("played already when played") {
-    assertResult(true) {TTTBoard("OX.XOX...", 'X').playedAlready(1)}
+    assertResult(true) {TTTBoard("OX.XOX...", 'X').occupied(1)}
   }
   test("played already when available") {
-    assertResult(false) {TTTBoard("OX.XOX...", 'X').playedAlready(2)}
+    assertResult(false) {TTTBoard("OX.XOX...", 'X').occupied(2)}
   }
 }

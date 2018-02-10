@@ -8,14 +8,14 @@ import scala.util.Random
 object QTable {
 
   /** The seed will be set in unit tests so things are deterministic, but normally we don't care */
-  val RND = new Random((Math.random() * 10000).toLong)
+  private val RND = new Random((Math.random() * 10000).toLong)
 
   /** There is always at least this probability that a random move will be selected.
     * Values between 0.01 and 0.1 are good, but more experimentation needed. */
-  val DEFAULT_EPS = 0.1
+  private val DEFAULT_EPS = 0.1
 
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
-  val EPS_DROPOFF = 5.0f
+  private val EPS_DROPOFF = 5.0f
 }
 
 /** Map from states to possible moves and their values.
@@ -58,16 +58,17 @@ class QTable[T](val initialState: State[T], epsilon: Double = DEFAULT_EPS, rnd: 
 
   /** Update QTable with new knowledge.
     * Q[s,a] = Q[s,a] + learningRate * (reward + futureRewardDiscount * max(Q[s1,:]) - Q[s,a])
-    * @param board last board
-    * @param action transition that takes us from b to nextBoard. It's also the action who's value to update.
+    * @param state last board
+    * @param action transition that takes us from b to nextState. It's also the action who's value to update.
+    * @param nextState the state that you get by applying the action
     */
-  def update(board: State[T], action: (T, Float), nextBoard: State[T],
+  def update(state: State[T], action: (T, Float), nextState: State[T],
              learningRate: Float, futureRewardDiscount: Float = 1.0f): Unit = {
-    val nextActions = table(nextBoard)
-    val futureValue = if (nextActions.isEmpty) 0.0f else nextBoard.selectBestAction(nextActions.toSeq, rnd)._2
-    val reward = nextBoard.rewardForLastMove
+    val nextActions = table(nextState)
+    val futureValue = if (nextActions.isEmpty) 0.0f else nextState.selectBestAction(nextActions.toSeq, rnd)._2
+    val reward = nextState.rewardForLastMove
     val newValue = action._2 + learningRate * ((reward + futureRewardDiscount * futureValue) - action._2)
-    table(board) += (action._1 -> newValue)  // update
+    table(state) += (action._1 -> newValue)  // update
   }
 
   def getActions(b: State[T]): mutable.Map[T, Float] = table(b)

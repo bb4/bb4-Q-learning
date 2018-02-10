@@ -20,15 +20,16 @@ import scala.util.Random
   */
 case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') extends State[Int]{
 
-  def isWon: Boolean = isWon('X') || isWon('O')
   def hasTransitions: Boolean = state.contains('.') && !isWon
-  def isWonByLastMove: Boolean = isWon(nextPlayerToMove)
-  def playedAlready(pos: Int): Boolean = state.charAt(pos) != '.'
+  def occupied(pos: Int): Boolean = state.charAt(pos) != '.'
 
   def makeTransition(position: Int): TTTBoard = {
     val newState = state.substring(0, position) + playerToMove + state.substring(position + 1)
     TTTBoard(newState, nextPlayerToMove)
   }
+
+  def isWonByLastMove: Boolean = isWon(nextPlayerToMove)
+  def isWon: Boolean = isWon('X') || isWon('O')
 
   def isWon(player: Char): Boolean = {
     val winStr = "" + player + player + player
@@ -47,13 +48,12 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') exten
   }
 
   def rewardForLastMove: Float = {
-    if (isWonByLastMove) {
-      if (nextPlayerToMove == 'X') 1.0f else -1.0f
-    } else 0.0f
+    if (isWonByLastMove) { if (nextPlayerToMove == 'X') 1.0f else -1.0f }
+    else 0.0f
   }
 
   /** @return the best action to take from the perspective of the current player.
-    *  If more than one best,  choose randomly from among them
+    *  If more than one best, choose randomly from among them.
     */
   def selectBestAction(actionList: Seq[(Int, Float)], rnd: Random): (Int, Float) = {
     val bestValue = if (playerToMove == 'X') actionList.map(_._2).max else actionList.map(_._2).min

@@ -26,12 +26,12 @@ case class QLearner[T](learningRate: Float = DEFAULT_LEARNING_RATE,
     */
   def learn(qtable: QTable[T], numEpisodes: Int = 1000): Unit = {
     for (i <- 0 until numEpisodes) {
-      var b = qtable.initialState
-      while (b.hasTransitions) {
-        val action = qtable.getNextAction(b, i)
-        val nextBoard = b.makeTransition(action._1)
-        qtable.update(b, action, nextBoard, learningRate, futureRewardDiscount)
-        b = nextBoard
+      var state = qtable.initialState
+      while (state.hasTransitions) {
+        val action = qtable.getNextAction(state, i)
+        val nextState = state.makeTransition(action._1)
+        qtable.update(state, action, nextState, learningRate, futureRewardDiscount)
+        state = nextState
       }
     }
   }

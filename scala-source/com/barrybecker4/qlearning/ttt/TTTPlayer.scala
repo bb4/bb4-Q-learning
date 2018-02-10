@@ -52,7 +52,7 @@ class TTTPlayer {
       if (state.playerToMove == humanSymbol) {
         println("move position [1 - 9]?")
         var pos = scanner.nextInt()
-        while (pos < 1 || pos > 9 || state.playedAlready(pos - 1)) {
+        while (pos < 1 || pos > 9 || state.occupied(pos - 1)) {
           println("Invalid. Try again.")
           pos = scanner.nextInt()
         }
