@@ -7,7 +7,7 @@ import com.barrybecker4.qlearning.common.{QLearner, QTable}
 object TTTPlayer {
   def main(args:Array[String]) {
     val gamePlayer = new TTTPlayer()
-    println("Let's play Tic-Tac-Toe. You are X and go first.")
+    println("Let's play Tic-Tac-Toe!")
     gamePlayer.playGameAgainstHuman()
   }
 }
@@ -22,19 +22,34 @@ class TTTPlayer {
   private val scanner = new Scanner(System.in)
 
   def playGameAgainstHuman(): Unit = {
-    learner.learn(table, 10000)
-    val finalState = playTheGame()
-    showOutcome(finalState)
+    learnHowToPlay()
+    val humanGoesFirst = determineIfHumanFirst()
+    val finalState = playTheGame(humanGoesFirst)
+    showOutcome(finalState, humanGoesFirst)
+  }
+
+  private def learnHowToPlay(): Unit = {
+    print("Learning...")
+    learner.learn(table, 200000)
+    println("...I just learned how to play.\n")
+  }
+
+  private def determineIfHumanFirst(): Boolean = {
+    println("Would you like to go first? (y/n)")
+    print("[y]")
+    val answer = scanner.nextLine()
+    answer.isEmpty || answer.head.toUpper == 'H'
   }
 
   /** @return the final game state when no moves left */
-  private def playTheGame(): TTTBoard = {
+  private def playTheGame(humanGoesFirst: Boolean): TTTBoard = {
     var state: TTTBoard = TTTBoard()
+    val humanSymbol = if (humanGoesFirst) 'X' else 'O'
 
     while (!state.isWonByLastMove && state.hasTransitions) {
       println("--------")
       println(state.toString)
-      if (state.playerToMove == 'X') {
+      if (state.playerToMove == humanSymbol) {
         println("move position [1 - 9]?")
         var pos = scanner.nextInt()
         while (pos < 1 || pos > 9 || state.playedAlready(pos - 1)) {
@@ -50,12 +65,12 @@ class TTTPlayer {
     state
   }
 
-  private def showOutcome(finalState: TTTBoard): Unit = {
+  private def showOutcome(finalState: TTTBoard, humanGoesFirst: Boolean): Unit = {
     println("\n" + finalState.toString)
-    if (finalState.isWon('X')) {
+    if (finalState.isWon(if (humanGoesFirst) 'X' else 'O')) {
       println("*** Congratulations - you won! ***")
     }
-    else if (finalState.isWon('O')) {
+    else if (finalState.isWon(if (humanGoesFirst) 'O' else 'X')) {
       println("*** You lost! Better luck next time ***")
     }
     else {

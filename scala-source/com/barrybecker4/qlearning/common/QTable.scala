@@ -8,7 +8,7 @@ import scala.util.Random
 object QTable {
 
   /** The seed will be set in unit tests so things are deterministic, but normally we don't care */
-  val RND = new Random(0)
+  val RND = new Random((Math.random() * 10000).toLong)
 
   /** There is always at least this probability that a random move will be selected.
     * Values between 0.01 and 0.1 are good, but more experimentation needed. */
