@@ -48,10 +48,8 @@ case class QTable[T](initialState: State[T],
   /** @return the best transition from the current state, from point of view of current player */
   def getBestMove(b: State[T]): (T, Float) = {
     val actionsList = table(b).toSeq
-    println("the possible actions are " + actionsList.mkString(", "))
-    val action = b.selectBestAction(actionsList, rnd)
-    println("of those, we select " + action)
-    action
+    //println("the possible actions are " + actionsList.mkString(", "))
+    b.selectBestAction(actionsList, rnd)
   }
 
   /** The selected action gets less random over time
