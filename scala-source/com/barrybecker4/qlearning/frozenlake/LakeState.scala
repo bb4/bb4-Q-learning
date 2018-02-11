@@ -11,6 +11,7 @@ import Direction.Direction
   */
 case class LakeState(location: Location, lake: Lake) extends State[Direction]{
 
+  def this(lake: Lake) { this(lake.start, lake) }
   def hasTransitions: Boolean = !(lake.isInHole(location) || lake.isGoal(location))
 
   def makeTransition(direction: Direction): LakeState = {
@@ -19,8 +20,8 @@ case class LakeState(location: Location, lake: Lake) extends State[Direction]{
   }
 
   def isGoalReached: Boolean = lake.isGoal(location)
+  def isInHole: Boolean = lake.isInHole(location)
   def getLegalTransitions: Seq[Direction] = lake.getLegalTransitionsFrom(location)
-
 
   def rewardForLastMove: Float = {
     if (lake.isInHole(location)) -1.0f

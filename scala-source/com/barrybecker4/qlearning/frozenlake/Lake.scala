@@ -2,6 +2,9 @@ package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import Lake.RND
+import com.barrybecker4.qlearning.common.State
+
+import scala.collection.mutable
 import scala.util.Random
 
 
@@ -41,7 +44,7 @@ object Lake {
   *                      direction on each attempted movement.
   * @author Barry Becker
   */
-class Lake(numRows: Int, numColumns: Int, start: Location,
+case class Lake(numRows: Int, numColumns: Int, start: Location,
            goal: Location, holes: Set[Location],
            windFrequency: Double = 0, rnd: Random = RND) {
 
@@ -67,6 +70,14 @@ class Lake(numRows: Int, numColumns: Int, start: Location,
 
   def inBounds(loc: Location): Boolean = {
     loc.row >= 0 && loc.row < numRows && loc.col >= 0 && loc.col < numColumns
+  }
+
+  /** @return all states and transactions from them */
+  def initialTable(): Map[State[Direction], mutable.Map[Direction, Float]] = {
+    (for (i <- 0 until numRows * numColumns)
+        yield (LakeState(Location(i / numColumns, i % numColumns), this),
+          mutable.Map(Direction.VALUES.map(d => (d, 0.0f)): _*))
+      ).toMap
   }
 
   override def toString: String = {

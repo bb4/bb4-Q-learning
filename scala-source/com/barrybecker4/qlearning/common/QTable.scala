@@ -16,6 +16,7 @@ object QTable {
 
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
   private val EPS_DROPOFF = 5.0f
+
 }
 
 /** Map from states to possible moves and their values.
@@ -25,14 +26,24 @@ object QTable {
   * A Qtable works well when the size of the space is relatively small, but for more complex games and puzzles,
   * like go for example, we need to use a model like a deep neural net to approximate the total space.
   *
-  * @param initialState the initial state of the game (or whatever)
+  * Wparam initialState starting state (optional). If provided, then all other states are inferred from this one.
+  * @param initialState starting state
+  * @param theTable (Optional) table of all possible states and possible transitions from them.
+  *            If not provided, then all states will be inferred from the starting state.
   * @param epsilon percent of the time to make a random transition instead of make the best one
   * @param rnd used for deterministic unit tests.
   * @author Barry Becker
   */
-class QTable[T](val initialState: State[T], epsilon: Double = DEFAULT_EPS, rnd: Random = RND) {
+case class QTable[T](initialState: State[T],
+                     theTable: Option[Map[State[T], mutable.Map[T, Float]]],
+                     epsilon: Double = DEFAULT_EPS, rnd: Random = RND) {
 
-  var table: Map[State[T], mutable.Map[T, Float]] = createInitializedTable()
+  val table: Map[State[T], mutable.Map[T, Float]] =
+    if (theTable.isEmpty) createInitializedTable(initialState) else theTable.get
+
+  /* Use this constructor if the dame is completely deterministic. It will find all states and possible transitions */
+  //def this(initialState: State[T], epsilon: Double, rnd: Random) =
+  //  this(initialState, None, epsilon, rnd)
 
   /** @return the best transition from the current state, from point of view of current player */
   def getBestMove(b: State[T]): (T, Float) = {
@@ -77,7 +88,7 @@ class QTable[T](val initialState: State[T], epsilon: Double = DEFAULT_EPS, rnd: 
     table.filter(e => e._2.values.sum > 0.0f).take(n).mkString("\n")
 
   /** @return a map from all possible states to a map of possible actions to their expected value */
-  def createInitializedTable(): Map[State[T], mutable.Map[T, Float]] = {
+  private def createInitializedTable(initialState: State[T]): Map[State[T], mutable.Map[T, Float]] = {
     val table = mutable.Map[State[T], mutable.Map[T, Float]]()
     traverse(initialState, table)
     table.map(entry => (entry._1, entry._2)).toMap // make immutable

@@ -10,12 +10,12 @@ import scala.util.Random
 class QLearnerSuite extends FunSuite {
 
   val learner = new QLearner[Int]()
-  val qtable = new QTable(TTTBoard(), epsilon = 0.1, new Random(0))
+  val qtable = new QTable(TTTBoard(), None, epsilon = 0.1, new Random(0))
   learner.learn(qtable, 200000)
 
   test("Learning short, epsilon - 0.01") {
     val learner = new QLearner[Int]()
-    val qtable = new QTable(TTTBoard(), epsilon = 0.01, new Random(0))    // 0.01 likely too small
+    val qtable = new QTable(TTTBoard(), None, epsilon = 0.01, new Random(0))    // 0.01 likely too small
 
     learner.learn(qtable, 20000)
 
@@ -56,7 +56,7 @@ class QLearnerSuite extends FunSuite {
 
   test("Learning short, epsilon - 0.1") {
     val learner = new QLearner[Int]()
-    val qtable = new QTable(TTTBoard(), epsilon = 0.1, new Random(0))
+    val qtable = new QTable(TTTBoard(), None, epsilon = 0.1, new Random(0))
 
     learner.learn(qtable, 20000)
 
@@ -97,7 +97,7 @@ class QLearnerSuite extends FunSuite {
 
   test("Learning short, epsilon - 0.2") {
     val learner = new QLearner[Int]()
-    val qtable = new QTable(TTTBoard(), epsilon = 0.2, new Random(0))  // 0.2 is too big
+    val qtable = new QTable(TTTBoard(), None, epsilon = 0.2, new Random(0))  // 0.2 is too big
 
     learner.learn(qtable, 20000)
 

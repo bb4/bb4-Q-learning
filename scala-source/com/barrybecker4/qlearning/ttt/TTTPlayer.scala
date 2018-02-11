@@ -17,7 +17,7 @@ object TTTPlayer {
   */
 class TTTPlayer {
 
-  private val table = new QTable(TTTBoard(), epsilon = 0.05)
+  private val table = new QTable(TTTBoard(), None, epsilon = 0.05)
   private val learner = new QLearner[Int]()
   private val scanner = new Scanner(System.in)
 
