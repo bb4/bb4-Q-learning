@@ -104,7 +104,7 @@ class LakeSimulator {
       num = answer.trim.toDouble
     } catch {
       case e:NumberFormatException => println(s"bad = $num"); false
-      case _ => false
+      case _: Throwable => false
     }
     num < mini || num > maxi
   }

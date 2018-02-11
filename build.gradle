@@ -17,5 +17,17 @@ jar {
     }
 }
 
+task runTTT(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
+    group = 'application'
+}
+
+task runFrozenLake(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.barrybecker4.qlearning.frozenlake.LakeSimulator'
+    group = 'application'
+}
+
 // This allows publishing of the A-star library to Sonatype
 apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4-publish.gradle'

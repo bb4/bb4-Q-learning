@@ -37,8 +37,8 @@ class TTTPlayer {
   private def determineIfHumanFirst(): Boolean = {
     println("Would you like to go first? (y/n)")
     print("[y]")
-    val answer = scanner.nextLine()
-    answer.isEmpty || answer.head.toUpper == 'H'
+    var answer = scanner.nextLine()
+    answer.isEmpty || answer.head.toUpper == 'Y'
   }
 
   /** @return the final game state when no moves left */
