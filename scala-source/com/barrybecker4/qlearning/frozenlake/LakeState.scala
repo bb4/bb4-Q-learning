@@ -36,5 +36,5 @@ case class LakeState(location: Location, lake: Lake) extends State[Direction]{
     bestActions(rnd.nextInt(bestActions.length))
   }
 
-  override def toString: String = s"Location = $location \n$lake"
+  override def toString: String = s"Location = $location \n${lake.toString(Some(location))}"
 }

@@ -67,14 +67,11 @@ class TTTPlayer {
 
   private def showOutcome(finalState: TTTBoard, humanGoesFirst: Boolean): Unit = {
     println("\n" + finalState.toString)
-    if (finalState.isWon(if (humanGoesFirst) 'X' else 'O')) {
+    if (finalState.isWon(if (humanGoesFirst) 'X' else 'O'))
       println("*** Congratulations - you won! ***")
-    }
-    else if (finalState.isWon(if (humanGoesFirst) 'O' else 'X')) {
+    else if (finalState.isWon(if (humanGoesFirst) 'O' else 'X'))
       println("*** You lost! Better luck next time ***")
-    }
-    else {
+    else
       println("*** A tie! ****")
-    }
   }
 }

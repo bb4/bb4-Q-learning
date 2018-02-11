@@ -27,7 +27,7 @@ object LakeSimulator {
   */
 class LakeSimulator {
 
-  private val lake = Lake(4, 4, Location(1, 1), Location(3, 3), holes = Set(Location(2, 2)), 0.1)
+  private val lake = Lake() //Lake(4, 4, Location(1, 1), Location(3, 3), holes = Set(Location(2, 2)), 0.1)
 
   private val table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), 0.05, new Random(1L))
   private val learner = new QLearner[Direction]()
@@ -42,10 +42,9 @@ class LakeSimulator {
 
   private def learnHowToSolve(): Unit = {
     print("Learning...")
-    learner.learn(table, 10000)
+    learner.learn(table, 5000)
     println("...I just learned how to solve.\n")
   }
-
 
   /** @return the final game state when no moves left */
   private def solve(): LakeState = {
@@ -62,14 +61,11 @@ class LakeSimulator {
 
   private def showOutcome(finalState: LakeState): Unit = {
     println("\n" + finalState.toString)
-    if (finalState.isGoalReached) {
+    if (finalState.isGoalReached)
       println("*** Congratulations - you found the frisbee! ***")
-    }
-    else if (finalState.isInHole) {
+    else if (finalState.isInHole)
       println("*** You fell in a hole and drowned while searching :( ***")
-    }
-    else {
+    else
       println(s"*** You could not find it after searching for $MAX_MOVES moves ****")
-    }
   }
 }

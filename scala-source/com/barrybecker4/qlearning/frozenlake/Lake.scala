@@ -35,6 +35,7 @@ object Lake {
   * A wind occasionally blows the agent onto a space they didn’t choose, making perfect performance impossible.
   * Learning to avoid the holes and reach the goal are still doable.
   * The reward for steps where you survive is 0, die is -1, and reach the goal is 1.
+  * The 4x4 frozen lake config from OpenAI gym is "SFFFFHFHFFFHHFFG" (https://github.com/openai/gym)
   * @param numRows width of the lake in blocks
   * @param numColumns length of the length in blocks
   * @param start initial starting point of the agent
@@ -44,33 +45,46 @@ object Lake {
   *                      direction on each attempted movement.
   * @author Barry Becker
   */
-case class Lake(numRows: Int, numColumns: Int, start: Location,
-           goal: Location, holes: Set[Location],
-           windFrequency: Double = 0, rnd: Random = RND) {
+case class Lake(numRows: Int = 4, numColumns: Int = 4,
+                start: Location = Location(0, 0),
+                goal: Location = Location(3, 3),
+                holes: Set[Location] = Set(Location(1, 1), Location(1, 3), Location(2, 3), Location(3, 0)),
+                windFrequency: Double = 0, rnd: Random = RND) {
 
   def isInHole(loc: Location): Boolean = holes.contains(loc)
   def isGoal(loc: Location): Boolean = goal == loc
 
+
   /** @return the location ended up in after attempting to move from start, in direction dir */
   def attemptToMoveInDirection(intialLoc: Location, dir: Direction): Location = {
-    val desiredLoc = intialLoc.move(dir)
+    var desiredLoc = intialLoc.move(dir)
     if (rnd.nextDouble() < windFrequency)
-      desiredLoc.move(Direction.VALUES(rnd.nextInt(4)))  // wind moves you randomly
-    else desiredLoc
+      desiredLoc = desiredLoc.move(Direction.VALUES(rnd.nextInt(4)))  // wind moves you randomly
+    makeInBound(desiredLoc)
   }
 
   def getLegalTransitionsFrom(loc: Location): Seq[Direction] = {
     var moves: Seq[Direction] = Seq()
-    Direction.VALUES.foreach { d => addIfInBounds(loc, d, moves) }
+    if (!(isGoal(loc) || isInHole(loc))) {
+      Direction.VALUES.foreach { d => moves = addIfInBounds(loc.move(d), d, moves) }
+    }
     moves
   }
 
-  def addIfInBounds(candidateLoc: Location, dir: Direction, moves: Seq[Direction]): Seq[Direction] =
+  private def makeInBound(loc: Location): Location = {
+    if (loc.row < 0) Location(0, loc.col)
+    else if (loc.row >= numRows) Location(numRows - 1, loc.col)
+    else if (loc.col < 0) Location(loc.row, 0)
+    else if (loc.col >= numColumns) Location(loc.row, numColumns - 1)
+    else loc
+  }
+
+  private def addIfInBounds(candidateLoc: Location, dir: Direction, moves: Seq[Direction]): Seq[Direction] =
     if (inBounds(candidateLoc)) moves :+ dir else moves
 
-  def inBounds(loc: Location): Boolean = {
+  private def inBounds(loc: Location): Boolean =
     loc.row >= 0 && loc.row < numRows && loc.col >= 0 && loc.col < numColumns
-  }
+
 
   /** @return all states and transactions from them */
   def initialTable(): Map[State[Direction], mutable.Map[Direction, Float]] = {
@@ -80,15 +94,18 @@ case class Lake(numRows: Int, numColumns: Int, start: Location,
       ).toMap
   }
 
-  override def toString: String = {
+  def toString(currentLoc: Option[Location]): String = {
     var s = ""
     for (i <- 0 until numRows) {
       for (j <- 0 until numColumns) {
         val loc = Location(i, j)
-        s += (if (isInHole(loc)) 'H' else if (isGoal(loc)) 'G' else if (start == loc) 'S' else ".")
+        val symb = if (currentLoc.isDefined && currentLoc.get == loc) 'X'
+                   else if (isInHole(loc)) 'H' else if (isGoal(loc)) 'G' else if (start == loc) 'S' else '.'
+        s += symb
       }
       s += "\n"
     }
     s
   }
+  override def toString: String = toString(None)
 }
