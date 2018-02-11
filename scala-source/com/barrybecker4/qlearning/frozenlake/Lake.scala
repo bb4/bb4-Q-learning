@@ -49,7 +49,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
                 start: Location = Location(0, 0),
                 goal: Location = Location(3, 3),
                 holes: Set[Location] = Set(Location(1, 1), Location(1, 3), Location(2, 3), Location(3, 0)),
-                windFrequency: Double = 0, rnd: Random = RND) {
+                windFrequency: Double = 0.2, rnd: Random = RND) {
 
   def isInHole(loc: Location): Boolean = holes.contains(loc)
   def isGoal(loc: Location): Boolean = goal == loc
@@ -72,11 +72,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
   }
 
   private def makeInBound(loc: Location): Location = {
-    if (loc.row < 0) Location(0, loc.col)
-    else if (loc.row >= numRows) Location(numRows - 1, loc.col)
-    else if (loc.col < 0) Location(loc.row, 0)
-    else if (loc.col >= numColumns) Location(loc.row, numColumns - 1)
-    else loc
+    Location(Math.min(numRows - 1, Math.max(0, loc.row)), Math.min(numColumns - 1, Math.max(0, loc.col)))
   }
 
   private def addIfInBounds(candidateLoc: Location, dir: Direction, moves: Seq[Direction]): Seq[Direction] =
@@ -99,7 +95,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
     for (i <- 0 until numRows) {
       for (j <- 0 until numColumns) {
         val loc = Location(i, j)
-        val symb = if (currentLoc.isDefined && currentLoc.get == loc) 'X'
+        val symb = if (currentLoc.isDefined && currentLoc.get == loc) '@'
                    else if (isInHole(loc)) 'H' else if (isGoal(loc)) 'G' else if (start == loc) 'S' else '.'
         s += symb
       }
