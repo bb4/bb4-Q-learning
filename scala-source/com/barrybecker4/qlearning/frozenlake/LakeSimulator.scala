@@ -13,7 +13,7 @@ object LakeSimulator {
   /** give up if not solved in this many moves */
   val MAX_MOVES = 1000
   val DEFAULT_WIND_FEQUENCY = 0.1
-  val DEFAULT_EPSILON = 0.2  // exploitation vs exploration
+  val DEFAULT_EPSILON = 0.3  // exploitation vs exploration
   val DEFAULT_LEARNING_TRIALS = 10000
   val MAX_TEST_TRIALS = 100000
 
@@ -98,6 +98,7 @@ class LakeSimulator {
       answer.toDouble
     }
   }
+
   private def invalidNumRuns(answer: String, mini: Double, maxi: Double): Boolean = {
     var num: Double = 0.0
     try {
@@ -124,7 +125,7 @@ class LakeSimulator {
     val numTrials = getInputNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
     println("What wind frequence (0 - 1)?")
     val windFrequency = getInputNumber(DEFAULT_WIND_FEQUENCY, 0, 1.0)
-    println("What epsilon (0 - 1)? Higher value leads to more explration, rathern that exploitation.")
+    println("What epsilon (0 - 1)? Higher value leads to more exploration, rather than exploitation.")
     val epsilon = getInputNumber(DEFAULT_EPSILON, 0, 1.0)
 
     val lake = Lake(windFrequency = windFrequency)
