@@ -1,0 +1,10 @@
+package com.barrybecker4.qlearning.common
+
+/**
+  * Evaluates a Q-learning model
+  */
+trait Evaluator {
+
+  /** @return a number between 0 and 1. Zero meaning no error, and one is maximum error. */
+  def evaluate(): Double
+}

@@ -1,7 +1,5 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import java.util.Scanner
-
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import LakeSimulator._
@@ -32,7 +30,7 @@ object LakeSimulator {
   */
 class LakeSimulator {
 
-  private val scanner = new Scanner(System.in)
+  private val input = new Input()
   private var table: QTable[Direction] = _
 
   def simulate(): Unit = {
@@ -46,10 +44,8 @@ class LakeSimulator {
   }
 
   private def shouldRunIndividualSims(): Boolean = {
-    println("Do you want to run simulations one at a time (1) or do many and report the results (M)? (1/M)")
-    print("[1]:")
-    val answer = scanner.nextLine()
-    answer.isEmpty || answer.head == '1'
+    val msg = "Do you want to run simulations one at a time (1) or do many and report the results (m)?"
+    input.charQuery(msg, Seq('1', 'm')) == '1'
   }
 
   private def runIndividualSims(): Unit = {
@@ -83,50 +79,21 @@ class LakeSimulator {
 
   private def getNumRuns: Int = {
     println(s"How many simulations do you want to run [1 - $MAX_TEST_TRIALS]?")
-    getInputNumber(100, 1, MAX_TEST_TRIALS).toInt
+    input.getNumber(100, 1, MAX_TEST_TRIALS).toInt
   }
 
-  private def getInputNumber(default: Double, min: Double, max: Double): Double = {
-    print(s"[$default]")
-    var answer = scanner.nextLine()
-    if (answer.isEmpty) default
-    else {
-      while (invalidNumRuns(answer, min, max)) {
-        println(s"Invalid number '$answer'. Enter a number between $min and $max, inclusive.")
-        answer = scanner.nextLine()
-      }
-      answer.toDouble
-    }
-  }
-
-  private def invalidNumRuns(answer: String, mini: Double, maxi: Double): Boolean = {
-    var num: Double = 0.0
-    try {
-      num = answer.trim.toDouble
-    } catch {
-      case e:NumberFormatException => println(s"bad = $num"); false
-      case _: Throwable => false
-    }
-    num < mini || num > maxi
-  }
-
-  private def shouldContinue(): Boolean = {
-    println("Try to solve again? (y/n)")
-    print("[y]:")
-    val answer = scanner.nextLine()
-    answer.isEmpty || answer.head.toUpper == 'Y'
-  }
+  private def shouldContinue(): Boolean = input.charQuery("Try to solve again?", Seq('y', 'n')) == 'y'
 
   private def learnHowToSolve(windFrequency: Double = DEFAULT_WIND_FEQUENCY,
                               epsilon: Double = DEFAULT_EPSILON,
                               numTrials: Int = DEFAULT_LEARNING_TRIALS): Unit = {
 
     println("How many learning trials (100 - 1000000)?")
-    val numTrials = getInputNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
+    val numTrials = input.getNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
     println("What wind frequence (0 - 1)?")
-    val windFrequency = getInputNumber(DEFAULT_WIND_FEQUENCY, 0, 1.0)
+    val windFrequency = input.getNumber(DEFAULT_WIND_FEQUENCY, 0, 1.0)
     println("What epsilon (0 - 1)? Higher value leads to more exploration, rather than exploitation.")
-    val epsilon = getInputNumber(DEFAULT_EPSILON, 0, 1.0)
+    val epsilon = input.getNumber(DEFAULT_EPSILON, 0, 1.0)
 
     val lake = Lake(windFrequency = windFrequency)
     table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
