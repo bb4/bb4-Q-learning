@@ -1,4 +1,4 @@
-description = 'Q-learning Tic Tac Toe'
+description = 'Q-learning'
 group = 'com.barrybecker4'
 version = '0.1-SNAPSHOT'
 
