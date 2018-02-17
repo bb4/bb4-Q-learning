@@ -6,6 +6,6 @@ package com.barrybecker4.qlearning.common
   */
 trait Evaluator[T] {
 
-  /** @return a number between 0 and 1. Zero meaning no error, and one is maximum error. */
+  /** @return a measure of the error between 0 and 1. Zero meaning no error, and one is maximum error. */
   def evaluate(): Double
 }
