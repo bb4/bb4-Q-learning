@@ -3,7 +3,6 @@ package com.barrybecker4.qlearning.frozenlake
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import LakeSimulator._
-import scala.collection.mutable
 import scala.util.Random
 
 
@@ -13,6 +12,7 @@ object LakeSimulator {
   val DEFAULT_WIND_FEQUENCY = 0.1
   val DEFAULT_EPSILON = 0.3  // exploitation vs exploration
   val DEFAULT_LEARNING_TRIALS = 10000
+  val DEFAULT_TEST_TRIALS = 1000
   val MAX_TEST_TRIALS = 100000
 
   def main(args:Array[String]) {
@@ -32,6 +32,7 @@ class LakeSimulator {
 
   private val input = new Input()
   private var table: QTable[Direction] = _
+  private var evaluator: LakeEvaluator = _
 
   def simulate(): Unit = {
     learnHowToSolve()
@@ -49,37 +50,23 @@ class LakeSimulator {
   }
 
   private def runIndividualSims(): Unit = {
+    evaluator = new LakeEvaluator(table, DEFAULT_TEST_TRIALS, MAX_MOVES)
     do {
-      val (finalState, numSteps) = solve()
+      val (finalState, numSteps) = evaluator.solve()
       showOutcome(finalState, numSteps)
     } while (shouldContinue())
   }
 
   private def runLotsOfSimsAndReport(): Unit = {
-
     val numRuns = getNumRuns
-    val map = mutable.Map("deaths" -> (0, 0), "successes" -> (0, 0), "timeouts" -> (0, 0))
-
-    for (i <- 0 until numRuns) {
-      val (finalState, numSteps) = solve(verbose = false)
-      val endState = if (finalState.isGoalReached) "successes"
-      else if (finalState.isInHole)"deaths"
-      else "timeouts"
-
-      val value = map(endState)
-      map(endState) = (value._1 + 1, value._2 + numSteps)
-    }
-
-    Seq("successes", "deaths", "timeouts").foreach( v => {
-      val num = map(v)._1
-      val avg = if (num == 0) 0 else map(v)._2 / num
-      println(s"Num $v = $num  average steps = $avg")
-    })
+    evaluator = new LakeEvaluator(table, numRuns, MAX_MOVES)
+    evaluator.evaluate()
+    println(evaluator.getReport)
   }
 
   private def getNumRuns: Int = {
     println(s"How many simulations do you want to run [1 - $MAX_TEST_TRIALS]?")
-    input.getNumber(100, 1, MAX_TEST_TRIALS).toInt
+    input.getNumber(DEFAULT_TEST_TRIALS, 1, MAX_TEST_TRIALS).toInt
   }
 
   private def shouldContinue(): Boolean = input.charQuery("Try to solve again?", Seq('y', 'n')) == 'y'
@@ -98,25 +85,10 @@ class LakeSimulator {
     val lake = Lake(windFrequency = windFrequency)
     table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
     val learner = new QLearner[Direction](learningRate = 0.8f, futureRewardDiscount = 0.8f)
+
     print("Learning...")
     learner.learn(table, numTrials)
     println("...I just learned how to solve.\n")
-  }
-
-  /** @return the final game state when no moves left, and the number of steps it took to get there */
-  private def solve(verbose: Boolean = true): (LakeState, Int) = {
-    var state: LakeState = table.initialState.asInstanceOf[LakeState]
-    var ct = 0
-
-    while (state.hasTransitions && ct < MAX_MOVES) {
-      if (verbose) {
-        println(s"------------  step: $ct")
-        println(state.toString)
-      }
-      state = state.makeTransition(table.getBestMove(state)._1)
-      ct += 1
-    }
-    (state, ct)
   }
 
   private def showOutcome(finalState: LakeState, numSteps: Int): Unit = {

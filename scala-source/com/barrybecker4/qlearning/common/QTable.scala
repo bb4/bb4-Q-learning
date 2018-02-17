@@ -20,14 +20,13 @@ object QTable {
 }
 
 /** Map from states to possible moves and their values.
-  * For each move transition, there will be a floating point number which is an estimate of the value
+  * For each move transition (T), there will be a floating point number which is an estimate of the value
   * of making that particular move. Initially all those values are 0.
   *
   * A Qtable works well when the size of the space is relatively small, but for more complex games and puzzles,
   * like go for example, we need to use a model like a deep neural net to approximate the total space.
   *
-  * Wparam initialState starting state (optional). If provided, then all other states are inferred from this one.
-  * @param initialState starting state
+  * @param initialState starting state (optional). If provided, then all other states are inferred from this one.
   * @param theTable (Optional) table of all possible states and possible transitions from them.
   *            If not provided, then all states will be inferred from the starting state.
   * @param epsilon percent of the time to make a random transition instead of make the best one
