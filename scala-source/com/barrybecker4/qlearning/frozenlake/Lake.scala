@@ -25,6 +25,12 @@ case class Location(row: Int, col: Int) {
 
 object Lake {
   private val RND = new Random()
+
+  val SIMPLE_4x4_LAKE = new Lake()
+  val LARGE_7x10_LAKE = new Lake(7, 10,
+    start = Location(1, 1), goal = Location(6, 8),
+    holes = Set(Location(0, 0), Location(4, 2), Location(2, 3), Location(3, 8), Location(6, 5)),
+    windFrequency = 0.1, new Random(1L))
 }
 
 /** The lake configuration.
@@ -49,7 +55,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
                 start: Location = Location(0, 0),
                 goal: Location = Location(3, 3),
                 holes: Set[Location] = Set(Location(1, 1), Location(1, 3), Location(2, 3), Location(3, 0)),
-                windFrequency: Double = 0.2, rnd: Random = RND) {
+                windFrequency: Double = 0.1, rnd: Random = RND) {
 
   def isInHole(loc: Location): Boolean = holes.contains(loc)
   def isGoal(loc: Location): Boolean = goal == loc

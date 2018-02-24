@@ -10,26 +10,26 @@ class LakeEvaluatorSuite extends FunSuite {
 
 
   test(s"evaluate Lake: eps = 0.6, runs = 1000 ") {
-    assertResult(0.2375) { doEval(0.6, 1000 ) }
+    assertResult(0.065) { doEval(0.6, 1000 ) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 10000 ") {
-    assertResult(0.26799999999999996) { doEval(0.6, 10000 ) }
+    assertResult(0.06499999999999999) { doEval(0.6, 10000 ) }
   }
 
   test(s"evaluate Lake: eps = 1.0, runs = 1000 ") {
-    assertResult(0.07999999999999999) { doEval(1.0, 1000 ) }
+    assertResult(0.06599999999999999) { doEval(1.0, 1000 ) }
   }
 
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
     var zmap = Map[(Double, Int), Float]()
-    val numRunsSeq = Seq(50, 100, 200, 400, 800, 1600, 3200, 6400) // 12800, 25600, 51200, 6400
+    val numRunsSeq = Seq(50, 100, 200, 400, 800, 1600, 3200, 6400) // 6400, 12800, 25600, 51200, 6400
     val epsSeq = for (i <- 0 to 20) yield 0.05 * i
 
     for (numRuns <- numRunsSeq) {
       for (eps <- epsSeq) {
         val accuracy = (1.0 - doEval(eps, numRuns)).toFloat
-        println(numRuns + " e=" + eps + " accuracy=" + accuracy)
+        println(numRuns + " e=" + eps.toFloat + " accuracy=" + accuracy)
         zmap += (eps, numRuns) -> accuracy
       }
       println("calculated numRuns = " + numRuns)
@@ -52,22 +52,20 @@ class LakeEvaluatorSuite extends FunSuite {
 
   private def doEval(eps: Double, numRuns: Int): Double = {
     val rnd = new Random(1L)
-    val trials = 20
+    val trials = 10
     var sumError: Double = 0
 
     for (i <- 1 to trials) {
-      val lake = Lake(windFrequency = 0.06, rnd = rnd)
+      val lake = Lake.LARGE_7x10_LAKE // Lake(windFrequency = 0.06, rnd = rnd)
       val table =
         new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = eps, rnd)
-      val learner = new QLearner[Direction](learningRate = 0.5f, futureRewardDiscount = 0.95f)
+      val learner = new QLearner[Direction](learningRate = 0.6f, futureRewardDiscount = 0.9f)
       learner.learn(table, numEpisodes = numRuns)
 
       val evaluator = new LakeEvaluator(table, numRuns = 100, maxMoves = 500)
       sumError += evaluator.evaluate()
-      //println(evaluator.getReport)
     }
 
     sumError / trials
   }
-
 }
