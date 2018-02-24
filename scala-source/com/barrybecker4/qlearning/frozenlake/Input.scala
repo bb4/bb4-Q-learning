@@ -2,6 +2,7 @@ package com.barrybecker4.qlearning.frozenlake
 
 import java.util.Scanner
 
+/** Some convenience methods for gathering input from the user */
 class Input {
 
   private val scanner: Scanner = new Scanner(System.in)

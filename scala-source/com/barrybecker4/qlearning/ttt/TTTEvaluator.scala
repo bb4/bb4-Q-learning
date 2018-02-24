@@ -2,6 +2,11 @@ package com.barrybecker4.qlearning.ttt
 
 import com.barrybecker4.qlearning.common.{Evaluator, QTable}
 
+/**
+  * Provides a measure of distance between two Qtables using root mean squared distance over all entries.
+  * @param table the table to measure distance from standard
+  * @param goldStandard the table to comare to
+  */
 class TTTEvaluator(table: QTable[Int], goldStandard: QTable[Int]) extends Evaluator[Int] {
 
   def evaluate(): Double = {

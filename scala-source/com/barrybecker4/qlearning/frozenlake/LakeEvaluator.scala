@@ -13,13 +13,13 @@ object LakeEvaluator {
 }
 
 
-/** @param table the qtable to evaluate performance of
+/** @param table the qtable to evaluate the performance of
   * @param numRuns the number of test trials. The more the better the accuracy
   * @param maxMoves max moves before timing out and declaring unsuccessful.
   */
 class LakeEvaluator(table: QTable[Direction], numRuns: Int, maxMoves: Int = MAX_MOVES) extends Evaluator[Direction] {
 
-  var report: Report = _
+  private var report: Report = _
 
   class Report {
     val map = mutable.Map("deaths" -> (0, 0), "successes" -> (0, 0), "timeouts" -> (0, 0))

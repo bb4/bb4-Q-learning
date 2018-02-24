@@ -4,7 +4,6 @@ import com.barrybecker4.qlearning.common.QTable
 import org.scalatest.FunSuite
 import com.barrybecker4.qlearning.ttt.TestHelper._
 
-import scala.collection.mutable
 import scala.util.Random
 
 class QTableSuite extends FunSuite {
