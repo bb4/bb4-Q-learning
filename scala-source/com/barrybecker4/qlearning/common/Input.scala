@@ -1,4 +1,4 @@
-package com.barrybecker4.qlearning.frozenlake
+package com.barrybecker4.qlearning.common
 
 import java.util.Scanner
 

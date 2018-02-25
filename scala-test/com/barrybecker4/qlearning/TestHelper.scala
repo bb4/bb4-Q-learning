@@ -1,4 +1,4 @@
-package com.barrybecker4.qlearning.ttt
+package com.barrybecker4.qlearning
 
 object TestHelper {
 

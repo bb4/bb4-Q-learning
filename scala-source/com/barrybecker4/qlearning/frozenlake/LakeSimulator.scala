@@ -1,8 +1,9 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import com.barrybecker4.qlearning.common.{QLearner, QTable}
+import com.barrybecker4.qlearning.common.{Input, QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import LakeSimulator._
+
 import scala.util.Random
 
 

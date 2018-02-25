@@ -1,7 +1,7 @@
 package com.barrybecker4.qlearning.ttt
 
 import org.scalatest.FunSuite
-import TestHelper._
+import com.barrybecker4.qlearning.TestHelper._
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 import scala.util.Random
