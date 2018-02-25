@@ -13,8 +13,8 @@ The axes on the base are for epsilon and the number of learning trials (or episo
 The epsilon parameter determines the amount of random exploration versys exploitation of knowledge learned so far.
 When epsilon is larger it meas that each transition is more likely to be selected at random - leading to more exploration of the space.
 
-[Tic Tac Toe accuracy](results/ttt-accuracy-eps-numRuns.JPG)
+![Tic Tac Toe accuracy](results/ttt-accuracy-eps-numRuns.JPG)
 Tic Tac Toe learning Accuracy for different values of epsilon and number of trial runs
 
-[Frozen Lake accuracy](results/large_windy_lake-accuracy-eps-numRuns.JPG)
+![Frozen Lake accuracy](results/large_windy_lake-accuracy-eps-numRuns.JPG)
 Frozen Lake learning Accuracy for different values of epsilon and number of trial runs
