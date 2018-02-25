@@ -16,5 +16,5 @@ When epsilon is larger it meas that each transition is more likely to be selecte
 ![Tic Tac Toe accuracy](results/ttt-accuracy-eps-numRuns.JPG)
 Tic Tac Toe learning Accuracy for different values of epsilon and number of trial runs
 
-![Frozen Lake accuracy](results/large_windy_lake-accuracy-eps-numRuns.JPG)
+![Frozen Lake accuracy](results/large-windy-lake-accuracy-eps-numRuns.JPG)
 Frozen Lake learning Accuracy for different values of epsilon and number of trial runs
