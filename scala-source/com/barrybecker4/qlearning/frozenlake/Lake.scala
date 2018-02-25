@@ -27,10 +27,18 @@ object Lake {
   private val RND = new Random()
 
   val SIMPLE_4x4_LAKE = new Lake()
-  val LARGE_7x10_LAKE = new Lake(7, 10,
+
+  private val LARGE_LAKE_HOLES =  Set(
+    Location(0, 0), Location(4, 2), Location(2, 3), Location(3, 8), Location(6, 5), Location(0, 8), Location(1, 7)
+  )
+
+  val LARGE_WINDY_7x10_LAKE = new Lake(7, 10,
     start = Location(1, 1), goal = Location(6, 8),
-    holes = Set(Location(0, 0), Location(4, 2), Location(2, 3), Location(3, 8), Location(6, 5)),
-    windFrequency = 0.1, new Random(1L))
+    LARGE_LAKE_HOLES, windFrequency = 0.2, new Random(1L))
+
+  val LARGE_CALM_7x10_LAKE = new Lake(7, 10,
+    start = Location(1, 1), goal = Location(6, 8),
+    LARGE_LAKE_HOLES, windFrequency = 0.05, new Random(1L))
 }
 
 /** The lake configuration.

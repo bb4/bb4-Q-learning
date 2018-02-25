@@ -4,31 +4,49 @@ import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import org.scalatest.FunSuite
 import scala.util.Random
+import LakeEvaluatorSuite._
+import Lake._
 
+
+object LakeEvaluatorSuite {
+  val RND = new Random(1L)
+
+  val LEARNING_RATE = 0.6f
+  val FUTURE_REWARD_DISCOUNT = 0.9f
+}
 
 class LakeEvaluatorSuite extends FunSuite {
 
 
+  test(s"evaluate windy Lake: eps = 0.6, runs = 1000 ") {
+    assertResult(0.1125f) { doEval(0.6, 1000, lake = LARGE_WINDY_7x10_LAKE) }
+  }
+  test(s"evaluate calm Lake: eps = 0.6, runs = 1000 ") {
+    assertResult(0.04575f) { doEval(0.6, 1000, lake = LARGE_CALM_7x10_LAKE) }
+  }
+
   test(s"evaluate Lake: eps = 0.6, runs = 1000 ") {
-    assertResult(0.065) { doEval(0.6, 1000 ) }
+    assertResult(0.1025f) { doEval(0.6, 1000 ) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 10000 ") {
-    assertResult(0.06499999999999999) { doEval(0.6, 10000 ) }
+    assertResult(0.09675f) { doEval(0.6, 10000 ) }
   }
 
   test(s"evaluate Lake: eps = 1.0, runs = 1000 ") {
-    assertResult(0.06599999999999999) { doEval(1.0, 1000 ) }
+    assertResult(0.16425f) { doEval(1.0, 1000 ) }
   }
 
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
+
+    println("lake = \n" + LARGE_WINDY_7x10_LAKE.toString())
     var zmap = Map[(Double, Int), Float]()
-    val numRunsSeq = Seq(50, 100, 200, 400, 800, 1600, 3200, 6400) // 6400, 12800, 25600, 51200, 6400
+    val numRunsSeq = Seq(50, 100, 200, 400, 800, 1200, 1600, 2000) // 6400, 12800, 25600, 51200, 6400
     val epsSeq = for (i <- 0 to 20) yield 0.05 * i
 
     for (numRuns <- numRunsSeq) {
       for (eps <- epsSeq) {
-        val accuracy = (1.0 - doEval(eps, numRuns)).toFloat
+        val accuracy = (1.0 - doEval(eps, numRuns, lake = LARGE_WINDY_7x10_LAKE)).toFloat
         println(numRuns + " e=" + eps.toFloat + " accuracy=" + accuracy)
         zmap += (eps, numRuns) -> accuracy
       }
@@ -50,22 +68,22 @@ class LakeEvaluatorSuite extends FunSuite {
     }
   }
 
-  private def doEval(eps: Double, numRuns: Int): Double = {
-    val rnd = new Random(1L)
-    val trials = 10
+  private def doEval(eps: Double, numRuns: Int,
+                     learningRate: Float = LEARNING_RATE, lake: Lake = LARGE_WINDY_7x10_LAKE,
+                     futureRewardDiscount: Float = FUTURE_REWARD_DISCOUNT): Float = {
+    val trials = 20
     var sumError: Double = 0
 
     for (i <- 1 to trials) {
-      val lake = Lake.LARGE_7x10_LAKE // Lake(windFrequency = 0.06, rnd = rnd)
       val table =
-        new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = eps, rnd)
-      val learner = new QLearner[Direction](learningRate = 0.6f, futureRewardDiscount = 0.9f)
+        new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = eps, RND)
+      val learner = new QLearner[Direction](learningRate, futureRewardDiscount)
       learner.learn(table, numEpisodes = numRuns)
 
-      val evaluator = new LakeEvaluator(table, numRuns = 100, maxMoves = 500)
+      val evaluator = new LakeEvaluator(table, numRuns = 200, maxMoves = 500)
       sumError += evaluator.evaluate()
     }
 
-    sumError / trials
+    (sumError / trials).toFloat
   }
 }
