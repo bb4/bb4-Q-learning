@@ -76,11 +76,11 @@ class Connect4BoardSuite extends FunSuite {
     val b = Connect4Board("XOXOOOXOXOXOOXX.XO..O.XXO")
     assertResult(false) (b.isWon('X'))
     assertResult(false) (b.isWon('O'))
-   // assertResult(true) (b.hasTransitions)
+    assertResult(true) (b.hasTransitions)
   }
 
   test("has transitions (almost all filled)") {
-    val b = Connect4Board("XOXOOOXOXOXOOXXOXOXOOXXXOX")
+    val b = Connect4Board("XOXOXXXOXOXOOXXOXOXOOXOXOX")
     println(b)
     assertResult(false) (b.isWon('X'))
     assertResult(false) (b.isWon('O'))
@@ -90,5 +90,26 @@ class Connect4BoardSuite extends FunSuite {
   test("has no transitions") {
     val b = Connect4Board("XOXOOOXOXOXOOOXXOXOOOXXOXOOOXXOXOOO")
     assertResult(false) (b.hasTransitions)
+  }
+
+  test("get legal transitions (when none)") {
+    val b = Connect4Board("XOXOOOXOXOXOOOXXOXOOOXXOXOOOXXOXOOO")
+    assertResult("") (b.getLegalTransitions.mkString(", "))
+  }
+
+  test("get legal transitions (when some)") {
+    val b = Connect4Board("XOXOOOXOXOXOOOXXOXOXOXXOXXXOX.XO")
+    println(b)
+    assertResult("35, 29, 37, 38, 32, 33, 34") (b.getLegalTransitions.mkString(", "))
+  }
+
+  test("get legal transitions (for empty board)") {
+    val b = Connect4Board("")
+    assertResult("0, 1, 2, 3, 4, 5, 6") (b.getLegalTransitions.mkString(", "))
+  }
+
+  test("get legal transitions (at start of game)") {
+    val b = Connect4Board("...X.O")
+    assertResult("0, 1, 2, 10, 4, 12, 6") (b.getLegalTransitions.mkString(", "))
   }
 }
