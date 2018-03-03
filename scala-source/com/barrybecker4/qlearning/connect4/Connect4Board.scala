@@ -58,7 +58,10 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
     var row = 0
     while (row * NUM_COLS < state.length && row < NUM_ROWS) {
       val rowStr = state.substring(row * NUM_COLS, Math.min(state.length, (row + 1) * NUM_COLS))
-      if (rowStr.contains(winStr)) return true
+      if (rowStr.contains(winStr)) {
+        println(s"win at row $row")
+        return true
+      }
       row += 1
     }
     false
@@ -74,7 +77,10 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
           colStr += state.charAt(row * NUM_COLS + col)
           row += 1
         }
-        if (colStr.contains(winStr)) return true
+        if (colStr.contains(winStr)) {
+          println(s"win at col $col")
+          return true
+        }
       }
     }
     false
@@ -85,8 +91,10 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
       for (col <- 0 until NUM_COLS) {
         val pos = row * NUM_COLS + col
         // check both diagonals for each "player" piece in the bottom rows
-        if (state(pos) == player && (checkDiagonal(player, pos, 1) || checkDiagonal(player, pos, -1)))
-            return true
+        if (state(pos) == player && (checkDiagonal(player, pos, 1) || checkDiagonal(player, pos, -1))) {
+          println(s"diagonal win for $player starting at $row, $col")
+          return true
+        }
       }
     }
     false

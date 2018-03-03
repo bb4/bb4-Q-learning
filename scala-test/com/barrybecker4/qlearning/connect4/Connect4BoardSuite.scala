@@ -50,7 +50,7 @@ class Connect4BoardSuite extends FunSuite {
   }
 
   test("isWon diagonal / (true") {
-    val b = Connect4Board("XOXOXOXOXOXOOXX.XO..OX.OO")
+    val b = Connect4Board("XOXOXOXOXOXOOXX.XO..OX..OO")
     assertResult(false) (b.isWon('X'))
     assertResult(true) (b.isWon('O'))
   }
@@ -61,9 +61,34 @@ class Connect4BoardSuite extends FunSuite {
     assertResult(false, "unexpected win by O") (b.isWon('O'))
   }
 
-  test("isWon diagonal \\ (true") {
+  test("isWon diagonal \\ (true)") {
     val b = Connect4Board("XOXOOOXOXOXOOXX.XO..O.XOO")
     assertResult(false) (b.isWon('X'))
     assertResult(true) (b.isWon('O'))
+  }
+
+  test("has transitions (none when win present)") {
+    val b = Connect4Board("XOXOOOXOXOXOOXX.XO..O.XOO")
+    assertResult(false) (b.hasTransitions)
+  }
+
+  test("has transitions (true)") {
+    val b = Connect4Board("XOXOOOXOXOXOOXX.XO..O.XXO")
+    assertResult(false) (b.isWon('X'))
+    assertResult(false) (b.isWon('O'))
+   // assertResult(true) (b.hasTransitions)
+  }
+
+  test("has transitions (almost all filled)") {
+    val b = Connect4Board("XOXOOOXOXOXOOXXOXOXOOXXXOX")
+    println(b)
+    assertResult(false) (b.isWon('X'))
+    assertResult(false) (b.isWon('O'))
+    assertResult(true) (b.hasTransitions)
+  }
+
+  test("has no transitions") {
+    val b = Connect4Board("XOXOOOXOXOXOOOXXOXOOOXXOXOOOXXOXOOO")
+    assertResult(false) (b.hasTransitions)
   }
 }

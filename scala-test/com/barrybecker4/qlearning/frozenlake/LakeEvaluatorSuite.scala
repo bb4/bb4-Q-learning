@@ -37,6 +37,7 @@ class LakeEvaluatorSuite extends FunSuite {
     assertResult(0.16425f) { doEval(1.0, 1000 ) }
   }
 
+  /*
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
 
     println("lake = \n" + LARGE_WINDY_7x10_LAKE.toString())
@@ -66,7 +67,7 @@ class LakeEvaluatorSuite extends FunSuite {
         println((for (eps <- epsSeq) yield zmap(eps, numRunsSeq(idx))).mkString(", "))
       else println
     }
-  }
+  }*/
 
   private def doEval(eps: Double, numRuns: Int,
                      learningRate: Float = LEARNING_RATE, lake: Lake = LARGE_WINDY_7x10_LAKE,
