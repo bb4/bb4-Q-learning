@@ -8,7 +8,7 @@ import Connect4Board._
 object Connect4Board {
   val NUM_ROWS = 6
   val NUM_COLS = 7
-  val NUM_SPACES = NUM_ROWS * NUM_COLS
+  val NUM_SPACES: Int = NUM_ROWS * NUM_COLS
 }
 
 /** Immutable Connect4 board state and its operations.
@@ -50,26 +50,30 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
   def isWon: Boolean = isWon('X') || isWon('O')
 
   def isWon(player: Char): Boolean = {
-    val winStr = "" + player + player + player
+    val winStr = "" + player + player + player + player
     isRowWin(winStr) || isColumnWin(winStr) || isDiagonalWin(player)
   }
 
   private def isRowWin(winStr: String): Boolean = {
-    for (row <- 0 until NUM_ROWS) {
+    var row = 0
+    while (row * NUM_COLS < state.length && row < NUM_ROWS) {
       val rowStr = state.substring(row * NUM_COLS, Math.min(state.length, (row + 1) * NUM_COLS))
       if (rowStr.contains(winStr)) return true
+      row += 1
     }
     false
   }
 
-  // this could be optimize
+  // this could be optimized
   private def isColumnWin(winStr: String): Boolean = {
     if (state.length > 3 * NUM_COLS) {
       for (col <- 0 until NUM_COLS) {
         var row = 0
         var colStr = ""
-        while (row < NUM_ROWS && occupied(row * NUM_COLS + col))
+        while (row < NUM_ROWS && occupied(row * NUM_COLS + col)) {
           colStr += state.charAt(row * NUM_COLS + col)
+          row += 1
+        }
         if (colStr.contains(winStr)) return true
       }
     }
@@ -91,7 +95,7 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
   private def checkDiagonal(player: Char, pos: Int, direction: Int): Boolean = {
     var runlen = 1
     var nextPos = pos + NUM_COLS + direction
-    while (state(nextPos) == player) {
+    while (nextPos < state.length && state(nextPos) == player) {
       runlen += 1
       nextPos += NUM_COLS + direction
     }
@@ -139,7 +143,6 @@ case class Connect4Board(state: String = "", playerToMove: Char = 'X') extends S
       val txt = state.substring(row * NUM_COLS, Math.min(state.length, endCol))
       if (state.length < endCol) s += txt + "." * (endCol - state.length) + "\n"
       else s += txt + "\n"
-
     }
     s
   }
