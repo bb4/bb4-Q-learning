@@ -21,5 +21,4 @@ class TTTEvaluator(table: QTable[Int], goldStandard: QTable[Int]) extends Evalua
     }
     Math.sqrt(sumsq / ct)
   }
-
 }

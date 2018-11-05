@@ -63,5 +63,6 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') exten
   private def nextPlayerToMove = if (playerToMove == 'X') 'O' else 'X'
   private def checkForWin(winStr: String, idx1: Int, idx2: Int, idx3: Int): Boolean =
     ("" + state.charAt(idx1) + state.charAt(idx2) + state.charAt(idx3)) == winStr
-  override def toString: String = state.substring(0, 3) + "\n" + state.substring(3, 6) + "\n" + state.substring(6)
+  override def toString: String =
+    state.substring(0, 3) + "\n" + state.substring(3, 6) + "\n" + state.substring(6)
 }

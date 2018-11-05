@@ -11,7 +11,8 @@ object QTable {
   private val RND = new Random((Math.random() * 10000).toLong)
 
   /** There is always at least this probability that a random move will be selected.
-    * Values between 0.01 and 0.1 are good, but more experimentation needed. */
+    * Values between 0.01 and 0.1 are good, but more experimentation needed.
+    */
   private val DEFAULT_EPS = 0.1
 
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
@@ -24,7 +25,7 @@ object QTable {
   * of making that particular move. Initially all those values are 0.
   *
   * A Qtable works well when the size of the space is relatively small, but for more complex games and puzzles,
-  * like go for example, we need to use a model like a deep neural net to approximate the total space.
+  * like go, for example, we need to use a model like a deep neural net to approximate the total space.
   *
   * @param initialState starting state (optional). If provided, then all other states are inferred from this one.
   * @param theTable (Optional) table of all possible states and possible transitions from them.
@@ -39,10 +40,6 @@ case class QTable[T](initialState: State[T],
 
   val table: Map[State[T], mutable.Map[T, Float]] =
     if (theTable.isEmpty) createInitializedTable(initialState) else theTable.get
-
-  /* Use this constructor if the dame is completely deterministic. It will find all states and possible transitions */
-  //def this(initialState: State[T], epsilon: Double, rnd: Random) =
-  //  this(initialState, None, epsilon, rnd)
 
   /** @return the best transition from the current state, from point of view of current player */
   def getBestMove(b: State[T]): (T, Float) = {
@@ -98,9 +95,8 @@ case class QTable[T](initialState: State[T],
       val possibleMoves = currentState.getLegalTransitions
       val moves: mutable.Map[T, Float] = mutable.Map(possibleMoves.map(m => (m, 0.0f)): _*)
       table(currentState) = moves
-      for (position <- moves.keys) {
+      for (position <- moves.keys)
         traverse(currentState.makeTransition(position), table)
-      }
     }
   }
 

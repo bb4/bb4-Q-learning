@@ -16,6 +16,6 @@ trait State[T] {
   /** @return the amount of reward for the transition to this state */
   def rewardForLastMove: Float
 
-  /** @return the best action to take */
+  /** @return the best action to take from the current state */
   def selectBestAction(actionList: Seq[(T, Float)], rnd: Random): (T, Float)
 }
