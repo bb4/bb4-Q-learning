@@ -2,5 +2,5 @@
 *.log
 /.idea/
 /.gradle/
-/Q-learning-ttt.iml
+/bb4-Q-learning.iml
 
