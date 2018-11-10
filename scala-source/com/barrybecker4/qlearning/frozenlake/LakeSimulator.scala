@@ -2,11 +2,12 @@ package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
-import LakeSimulator._
+import LakeSimulator.{DEFAULT_TEST_TRIALS, MAX_MOVES, MAX_TEST_TRIALS, DEFAULT_WIND_FEQUENCY,
+  DEFAULT_EPSILON, DEFAULT_LEARNING_TRIALS}
 import scala.util.Random
 
 
-object LakeSimulator {
+object LakeSimulator extends App {
   /** give up if not solved in this many moves */
   val MAX_MOVES = 1000
   val DEFAULT_WIND_FEQUENCY = 0.1
@@ -15,14 +16,12 @@ object LakeSimulator {
   val DEFAULT_TEST_TRIALS = 1000
   val MAX_TEST_TRIALS = 100000
 
-  def main(args:Array[String]) {
-    val simulator = new LakeSimulator()
-    println("Let's simulate the frozen lake problem.")
-    println("Starting from S, try to retrieve the frisbee at G while avoiding holes (H) ")
-    println(s"and being mindful of the random wind, " +
-      s"which can occasionally blow you in a random direction.\n")
-    simulator.simulate()
-  }
+  val simulator = new LakeSimulator()
+  println("Let's simulate the frozen lake problem.")
+  println("Starting from S, try to retrieve the frisbee at G while avoiding holes (H) ")
+  println(s"and being mindful of the random wind, " +
+    s"which can occasionally blow you in a random direction.\n")
+  simulator.simulate()
 }
 
 /** Text based lake simulator.
