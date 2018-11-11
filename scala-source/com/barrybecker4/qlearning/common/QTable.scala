@@ -73,8 +73,10 @@ case class QTable[T](initialState: State[T],
     val futureValue = if (nextActions.isEmpty) 0.0f else nextState.selectBestAction(nextActions.toSeq, rnd)._2
     val reward = nextState.rewardForLastMove
     val newValue = action._2 + learningRate * ((reward + futureRewardDiscount * futureValue) - action._2)
-    //println(s"newValue=$newValue (act_2=${action._2} + lr=$learningRate *((rew=$reward +
-    // frd=$futureRewardDiscount * futureVal=$futureValue) - act_2=action._2)")
+//    if (newValue != 0) {
+//      println(s"newValue=$newValue (act_2=${action._2} + lr=$learningRate *((rew=$reward + " +
+//        s"frd=$futureRewardDiscount * futureVal=$futureValue) - act_2=action._2) \n  for state $state and action $action")
+//    }
     table(state) += (action._1 -> newValue)  // update
   }
 

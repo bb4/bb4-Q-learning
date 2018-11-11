@@ -38,24 +38,30 @@ case class ChopsticksState(playerHands: (Byte, Byte) = (1, 1),
     */
   override def makeTransition(transition: TransType): ChopsticksState = {
     transition._2 match {
-      case 0 => // self tap - split
-        val sum = playerHands._1 + playerHands._2
-        assert(sum % 2 == 0, "Did not have an even sum of fingers!")
-        val selfAvgFinders = (sum / 2).toByte
-        ChopsticksState(opponentHands, (selfAvgFinders, selfAvgFinders))
-      case oppHandIdx: Byte =>
-        val ownFingersToAdd: Byte = if (transition._1 == 1) playerHands._1 else playerHands._2
-        val newOppsHands =
-          if (oppHandIdx == 1) ((opponentHands._1 + ownFingersToAdd).toByte, opponentHands._2)
-          else (opponentHands._1, (opponentHands._2 + ownFingersToAdd).toByte)
-
-        if (newOppsHands._1 >= NUM_FINGERS_PER_HAND)
-          ChopsticksState((0, newOppsHands._2), playerHands)
-        else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND)
-          ChopsticksState((newOppsHands._1, 0), playerHands)
-        else
-          ChopsticksState(newOppsHands, playerHands)
+      case 0 => doSelfSplit(transition)
+      case oppHandIdx: Byte => tapOpponent(transition, oppHandIdx)
     }
+  }
+
+  private def doSelfSplit(transition: TransType): ChopsticksState ={
+    val sum = playerHands._1 + playerHands._2
+    assert(sum % 2 == 0, "Did not have an even sum of fingers!")
+    val selfAvgFinders = (sum / 2).toByte
+    ChopsticksState(opponentHands, (selfAvgFinders, selfAvgFinders))
+  }
+
+  private def tapOpponent(transition: TransType, oppHandIdx: Byte): ChopsticksState = {
+    val ownFingersToAdd: Byte = if (transition._1 == 1) playerHands._1 else playerHands._2
+    assert(ownFingersToAdd > 0, "You cannot tap with an inactive hand.")
+    val newOppsHands =
+      if (oppHandIdx == 1) ((opponentHands._1 + ownFingersToAdd).toByte, opponentHands._2)
+      else (opponentHands._1, (opponentHands._2 + ownFingersToAdd).toByte)
+    if (newOppsHands._1 >= NUM_FINGERS_PER_HAND)
+      ChopsticksState((0, newOppsHands._2), playerHands)
+    else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND)
+      ChopsticksState((newOppsHands._1, 0), playerHands)
+    else
+      ChopsticksState(newOppsHands, playerHands)
   }
 
   /** @return all legal transitions from the current state */
