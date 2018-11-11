@@ -49,16 +49,18 @@ case class QTable[T](initialState: State[T],
   }
 
   /** The selected action gets less random over time
+    * @param s the current state
+    * @param episodeNumber as the episode number increases, we are less likely to take random actions
     * @return the position to move to next
     */
-  def getNextAction(b: State[T], episodeNumber: Int): (T, Float) = {
-    val actions = table(b)
+  def getNextAction(s: State[T], episodeNumber: Int): (T, Float) = {
+    val actions = table(s)
     val actionList: List[(T, Float)] =
       actions.toList.map(entry => (entry._1, entry._2))
 
     val eps = epsilon + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
     if (rnd.nextDouble() < eps) actionList(rnd.nextInt(actionList.length)) // purely random action
-    else b.selectBestAction(actionList, rnd) // select randomly from actions with best value
+    else s.selectBestAction(actionList, rnd) // select randomly from actions with best value
   }
 
   /** Update QTable with new knowledge.

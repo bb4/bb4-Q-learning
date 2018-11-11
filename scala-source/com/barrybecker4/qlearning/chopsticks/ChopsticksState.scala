@@ -74,7 +74,13 @@ case class ChopsticksState(playerHands: (Byte, Byte) = (1, 1),
   }
 
   /** @return the amount of reward for the transition to this state */
-  override def rewardForLastMove: Float = if (isWon) 1 else if (isLost) -1 else 0
+  override def rewardForLastMove: Float =
+    if (isWon) 1
+    else if (isLost) -1
+    else {
+      if (playerHands._1 == 0 || playerHands._2 == 0) 0.01f
+      else 0
+    }
 
   /** @return the best action to take from the current state */
   override def selectBestAction(actionList: Seq[(TransType, Float)], rnd: Random): (TransType, Float) = {

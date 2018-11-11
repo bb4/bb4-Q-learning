@@ -73,7 +73,7 @@ class ChopsticksStateSuite extends FunSuite {
 
   test("getReward when player 1 won") {
     var b = ChopsticksState((1, 0), (0, 4))
-    assertResult(0f) {b.rewardForLastMove}
+    assertResult(0.5f) {b.rewardForLastMove}
     b = b.makeTransition((1, 2))
     assertResult(1.0f) {b.rewardForLastMove}
   }

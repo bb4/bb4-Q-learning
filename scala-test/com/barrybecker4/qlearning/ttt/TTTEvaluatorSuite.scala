@@ -1,8 +1,7 @@
 package com.barrybecker4.qlearning.ttt
 
 import java.util.Random
-
-import com.barrybecker4.qlearning.common.{QLearner, QTable}
+import com.barrybecker4.qlearning.common.{QLearner, QTable, RmsEvaluator}
 import org.scalatest.FunSuite
 
 
@@ -109,7 +108,7 @@ class TTTEvaluatorSuite extends FunSuite {
   private def doEval(eps: Double, numRuns: Int): Double = {
     val table = new QTable(TTTBoard(), None, eps, new Random(1))
     learner.learn(table, numRuns)
-    val evaluator = new TTTEvaluator(table, goldStandard)
+    val evaluator = new RmsEvaluator(table, goldStandard)
     evaluator.evaluate()
   }
 

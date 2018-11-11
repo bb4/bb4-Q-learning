@@ -16,7 +16,7 @@ object ChopsticksPlayer extends App {
   */
 class ChopsticksPlayer {
 
-  private val table: QTable[TransType] = new QTable(ChopsticksState(), None, epsilon = 0.05)
+  private val table: QTable[TransType] = new QTable(ChopsticksState(), None, epsilon = 0.2)
   private val learner = new QLearner[TransType](learningRate = 0.8f, futureRewardDiscount = 0.99f)
   private val scanner = new Scanner(System.in)
 
@@ -28,7 +28,7 @@ class ChopsticksPlayer {
 
   private def learnHowToPlay(): Unit = {
     print("Learning...")
-    learner.learn(table, 1000)
+    learner.learn(table, 20000)
     println("...I just learned how to play.\n")
   }
 
@@ -69,8 +69,9 @@ class ChopsticksPlayer {
   }
 
   private def doComputerMove(state: ChopsticksState): ChopsticksState = {
+    println("The choices are: " + table.getActions(state))
     val computerMove = table.getBestMove(state)._1
-    if (computerMove._1 == 0)
+    if (computerMove._2 == 0)
       println("The computer taps her own hand and does a split.")
     else
       println(s"The computer chooses to tap your hand #${computerMove._2} with her hand #${computerMove._1}.")
@@ -86,14 +87,27 @@ class ChopsticksPlayer {
   private lazy val validInputs: Set[(Byte, Byte)] =
     (for {i <- 1 to 2; j <- 0 to 2} yield (i.toByte, j.toByte)).toSet
 
+
+  private def isValid(action: (Byte, Byte), state: ChopsticksState): Boolean =
+    validInputs.contains(action) && validSplitIfSplit(action, state) && !inactiveHandTapped(action, state)
+
   private def validSplitIfSplit(action: (Byte, Byte), state: ChopsticksState): Boolean = {
     val v = (action._2 != 0) || (state.playerHands._1 + state.playerHands._2) % 2 == 0
     if (!v) println("You can't split if you do not have an even sum of fingers!")
     v
   }
 
-  private def isValid(action: (Byte, Byte), state: ChopsticksState): Boolean =
-    validInputs.contains(action) && validSplitIfSplit(action, state)
+  private def inactiveHandTapped(action: (Byte, Byte), state: ChopsticksState): Boolean = {
+    val inactiveTapped = action match {
+      case (1, 1) => state.playerHands._1 == 0 || state.opponentHands._1 == 0
+      case (2, 1) => state.playerHands._2 == 0 || state.opponentHands._1 == 0
+      case (1, 2) => state.playerHands._1 == 0 || state.opponentHands._2 == 0
+      case (2, 2) => state.playerHands._2 == 0 || state.opponentHands._2 == 0
+      case _ => false
+    }
+    if (inactiveTapped) println("An inactive hand cannot tap or be tapped")
+    inactiveTapped
+  }
 
   private def getAction(input: Int) = ((input / 10).toByte, (input % 10).toByte)
 }
