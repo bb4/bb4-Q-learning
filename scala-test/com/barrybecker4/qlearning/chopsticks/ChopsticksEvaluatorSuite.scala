@@ -15,49 +15,29 @@ class ChopsticksEvaluatorSuite extends FunSuite {
 
 
   test("evaluate ttt: eps = 0.3, runs = 50") {
-    assertResult(0.9618594822359201) { doEval(0.3, 50) }
+    assertResult(0.14508891859975734) { doEval(0.3, 50) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 500") {
-    assertResult(0.9211520289764503) { doEval(0.1, 500) }
+    assertResult(0.02202214294471018) { doEval(0.1, 500) }
   }
 
   test("evaluate ttt: eps = 0.3, runs = 5000") {
-    assertResult(0.5422335709077714) { doEval(0.3, 5000) }
+    assertResult(0.0) { doEval(0.3, 5000) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 5000") {
-    assertResult(0.7763048681179641) { doEval(0.1, 5000) }
-  }
-
-  test("evaluate ttt: eps = 0.3 runs = 10000") {
-    assertResult(0.378395979780673) { doEval(0.3, 10000) }
+    assertResult(0.0) { doEval(0.1, 5000) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 10000") {
-    assertResult(0.6777509229928838) { doEval(0.1, 10000) }
+    assertResult(0.0) { doEval(0.1, 10000) }
   }
 
   test("evaluate ttt: eps = 0.05 runs = 10000") {
-    assertResult(0.791279191824022) { doEval(0.05, 10000) }
+    assertResult(1.6209833548932114E-7) { doEval(0.05, 10000) }
   }
 
-
-  test(s"evaluate ttt: eps = 0.8, runs = 100000 ") {
-    assertResult(3.926845008215831E-7) { doEval(0.8, 100000 ) }
-  }
-//  test(s"evaluate ttt: eps = 0.9, runs = 100000 ") {
-//    assertResult(1.0095078758163613E-4) { doEval(0.9, 100000 ) }
-//  }
-//  test(s"evaluate ttt: eps = 0.95, runs = 100000 ") {
-//    assertResult(3.29072655512818E-5) { doEval(0.95, 100000 ) }
-//  }
-//  test(s"evaluate ttt: eps = 0.99, runs = 100000 ") {
-//    assertResult(1.90416303725586E-5) { doEval(0.99, 100000 ) }
-//  }
-//  test(s"evaluate ttt: eps = 1.0, runs = 100000 ") {
-//    assertResult(1.4585166309247292E-4) { doEval(1.0, 100000 ) }
-//  }
 
 
 //  test(s"evaluate ttt: eps = 0.3, runs = $TRIALS ") {
@@ -69,7 +49,7 @@ class ChopsticksEvaluatorSuite extends FunSuite {
 //  }
 
   test(s"evaluate ttt: eps = 0.5, runs = $TRIALS ") {
-    assertResult(0.0675268622033857) { doEval(0.5, TRIALS ) }
+    assertResult(0.0) { doEval(0.5, TRIALS ) }
   }
 
 //  test(s"evaluate ttt: eps = 0.6, runs = $TRIALS") {

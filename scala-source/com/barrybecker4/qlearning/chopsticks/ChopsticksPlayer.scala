@@ -47,21 +47,21 @@ class ChopsticksPlayer {
     while (state.hasTransitions) {
       println("--------")
       println(state.toString)
-      state = if (humanToMove) doHumanMove(state) else doComputerMove(state)
+      state = if (humanToMove) doHumanMove(state, humanGoesFirst) else doComputerMove(state)
       humanToMove = !humanToMove
     }
     showOutcome(state, humanToMove)
     state
   }
 
-  private def doHumanMove(state: ChopsticksState): ChopsticksState = {
+  private def doHumanMove(state: ChopsticksState, humanGoesFirst: Boolean): ChopsticksState = {
     val handOpts = "1 or 2"
     println("Enter a two digit number.\n" +
       s"The first digit is your hand to use for tapping ($handOpts),\n" +
       "and the second digit is the hand to be tapped " +
       s"($handOpts for one of their hands, or 0 for your own other hand): ")
     var action = getAction(scanner.nextInt())
-    while (!isValid(action, state)) {
+    while (!isValid(action, state, humanGoesFirst)) {
       println("Invalid. Try again.")
       action = getAction(scanner.nextInt())
     }
@@ -88,21 +88,26 @@ class ChopsticksPlayer {
     (for {i <- 1 to 2; j <- 0 to 2} yield (i.toByte, j.toByte)).toSet
 
 
-  private def isValid(action: (Byte, Byte), state: ChopsticksState): Boolean =
-    validInputs.contains(action) && validSplitIfSplit(action, state) && !inactiveHandTapped(action, state)
+  private def isValid(action: (Byte, Byte), state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
+    validInputs.contains(action) &&
+      validSplitIfSplit(action, state, humanGoesFirst) &&
+      !inactiveHandTapped(action, state, humanGoesFirst)
 
-  private def validSplitIfSplit(action: (Byte, Byte), state: ChopsticksState): Boolean = {
-    val v = (action._2 != 0) || (state.playerHands._1 + state.playerHands._2) % 2 == 0
+  private def validSplitIfSplit(action: (Byte, Byte), state: ChopsticksState, humanGoesFirst: Boolean): Boolean = {
+    val hands = if (humanGoesFirst) state.firstHands else state.secondHands
+    val v = (action._2 != 0) || (hands._1 + hands._2) % 2 == 0
     if (!v) println("You can't split if you do not have an even sum of fingers!")
     v
   }
 
-  private def inactiveHandTapped(action: (Byte, Byte), state: ChopsticksState): Boolean = {
+  private def inactiveHandTapped(action: (Byte, Byte), state: ChopsticksState, humanGoesFirst: Boolean): Boolean = {
+    if (action._2 == 0) return false // self tap
+    val (h1, h2) = if (humanGoesFirst) (state.firstHands, state.secondHands) else (state.secondHands, state.firstHands)
     val inactiveTapped = action match {
-      case (1, 1) => state.playerHands._1 == 0 || state.opponentHands._1 == 0
-      case (2, 1) => state.playerHands._2 == 0 || state.opponentHands._1 == 0
-      case (1, 2) => state.playerHands._1 == 0 || state.opponentHands._2 == 0
-      case (2, 2) => state.playerHands._2 == 0 || state.opponentHands._2 == 0
+      case (1, 1) => h1._1 == 0 || h2._1 == 0
+      case (2, 1) => h1._2 == 0 || h2._1 == 0
+      case (1, 2) => h1._1 == 0 || h2._2 == 0
+      case (2, 2) => h1._2 == 0 || h2._2 == 0
       case _ => false
     }
     if (inactiveTapped) println("An inactive hand cannot tap or be tapped")

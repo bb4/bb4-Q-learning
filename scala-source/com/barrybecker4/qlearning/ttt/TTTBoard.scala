@@ -46,6 +46,7 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') exten
     else for (i <- 0 until 9 if state.charAt(i) == '.') yield i
   }
 
+  /** @return the amount of reward from the point of view of the player that moved first */
   def rewardForLastMove: Float = {
     if (isWonByLastMove) { if (nextPlayerToMove == 'X') 1.0f else -1.0f }
     else 0.0f
