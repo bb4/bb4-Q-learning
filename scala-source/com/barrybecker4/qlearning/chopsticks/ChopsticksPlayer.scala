@@ -87,7 +87,6 @@ class ChopsticksPlayer {
   private lazy val validInputs: Set[(Byte, Byte)] =
     (for {i <- 1 to 2; j <- 0 to 2} yield (i.toByte, j.toByte)).toSet
 
-
   private def isValid(action: (Byte, Byte), state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
     validInputs.contains(action) &&
       validSplitIfSplit(action, state, humanGoesFirst) &&
@@ -101,7 +100,7 @@ class ChopsticksPlayer {
   }
 
   private def inactiveHandTapped(action: (Byte, Byte), state: ChopsticksState, humanGoesFirst: Boolean): Boolean = {
-    if (action._2 == 0) return false // self tap
+    if (action._2 == 0) return false // self tap of inactive hand is ok to do split
     val (h1, h2) = if (humanGoesFirst) (state.firstHands, state.secondHands) else (state.secondHands, state.firstHands)
     val inactiveTapped = action match {
       case (1, 1) => h1._1 == 0 || h2._1 == 0

@@ -16,6 +16,7 @@ object ChopsticksState {
   /** You can try learning with other than 5 fingers per hand if we want */
   private val NUM_FINGERS_PER_HAND = 5
 
+  /** If one player reaches this state (no fingers on either hand), then the other playe has won */
   private val DONE_STATE = (0, 0)
 }
 
@@ -57,36 +58,26 @@ case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
   }
 
   private def tapOpponent(transition: TransType, oppHandIdx: Byte): ChopsticksState = {
-    if (isFirstPlayerMove) firstTapsSecond(transition, oppHandIdx)
-    else secondTapsFirst(transition, oppHandIdx)
+    if (isFirstPlayerMove) doHandTap(transition, firstHands, secondHands, oppHandIdx)
+    else doHandTap(transition, secondHands, firstHands, oppHandIdx)
   }
 
-  private def firstTapsSecond(transition: TransType, oppHandIdx: Byte): ChopsticksState ={
-    val ownFingersToAdd: Byte = if (transition._1 == 1) firstHands._1 else firstHands._2
+  private def doHandTap(transition: TransType, srcHands: TransType, destHands: TransType,
+                        oppHandIdx: Byte): ChopsticksState = {
+    val ownFingersToAdd: Byte = if (transition._1 == 1) srcHands._1 else srcHands._2
     assert(ownFingersToAdd > 0, "You cannot tap with an inactive hand.")
-    val newOppsHands =
-      if (oppHandIdx == 1) ((secondHands._1 + ownFingersToAdd).toByte, secondHands._2)
-      else (secondHands._1, (secondHands._2 + ownFingersToAdd).toByte)
-    if (newOppsHands._1 >= NUM_FINGERS_PER_HAND)
-      ChopsticksState(firstHands, (0, newOppsHands._2), false)
-    else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND)
-      ChopsticksState(firstHands, (newOppsHands._1, 0), false)
-    else
-      ChopsticksState(firstHands, newOppsHands, false)
-  }
 
-  private def secondTapsFirst(transition: TransType, oppHandIdx: Byte): ChopsticksState ={
-    val ownFingersToAdd: Byte = if (transition._1 == 1) secondHands._1 else secondHands._2
-    assert(ownFingersToAdd > 0, "You cannot tap with an inactive hand.")
     val newOppsHands =
-      if (oppHandIdx == 1) ((firstHands._1 + ownFingersToAdd).toByte, firstHands._2)
-      else (firstHands._1, (firstHands._2 + ownFingersToAdd).toByte)
-    if (newOppsHands._1 >= NUM_FINGERS_PER_HAND)
-      ChopsticksState((0, newOppsHands._2), secondHands, true)
-    else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND)
-      ChopsticksState((newOppsHands._1, 0), secondHands, true)
-    else
-      ChopsticksState(newOppsHands, secondHands, true)
+      if (oppHandIdx == 1) ((destHands._1 + ownFingersToAdd).toByte, destHands._2)
+      else (destHands._1, (destHands._2 + ownFingersToAdd).toByte)
+
+    val (src, newDest) =
+      if (newOppsHands._1 >= NUM_FINGERS_PER_HAND) (srcHands, (0.toByte, newOppsHands._2))
+      else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND) (srcHands, (newOppsHands._1, 0.toByte))
+      else (srcHands, newOppsHands)
+
+    if (isFirstPlayerMove) ChopsticksState(src, newDest, false)
+    else ChopsticksState(newDest, src, true)
   }
 
   /** @return all legal transitions from the current state */
