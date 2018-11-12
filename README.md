@@ -18,3 +18,6 @@ When epsilon is larger, it meas that each transition is more likely to be select
 
 ![Frozen Lake accuracy](results/large-windy-lake-accuracy.JPG)
 <br>Frozen Lake learning Accuracy for different values of epsilon and number of trial runs
+
+![Finger Chopsticks accuracy](results/large-chopsticks-accuracy.png)
+<br>Finger chopsticks learning Accuracy for different values of epsilon and number of trial runs

@@ -20,9 +20,10 @@ object QTable {
 
 }
 
-/** Map from states to possible moves and their values.
+/**
+  * Map from states to possible moves and their values.
   * For each move transition (T), there will be a floating point number which is an estimate of the value
-  * of making that particular move. Initially all those values are 0.
+  * of making that particular move from the current state. Initially all those values are 0.
   *
   * A Qtable works well when the size of the space is relatively small, but for more complex games and puzzles,
   * like go, for example, we need to use a model like a deep neural net to approximate the total space.
