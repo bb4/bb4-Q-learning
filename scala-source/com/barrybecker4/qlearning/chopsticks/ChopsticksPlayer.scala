@@ -72,9 +72,9 @@ class ChopsticksPlayer {
     println("The choices are: " + table.getActions(state))
     val computerMove = table.getBestMove(state)._1
     if (computerMove._2 == 0)
-      println("The computer taps her own hand and does a split.")
+      println("The computer taps its own hand and does a split.")
     else
-      println(s"The computer chooses to tap your hand #${computerMove._2} with her hand #${computerMove._1}.")
+      println(s"The computer chooses to tap your hand #${computerMove._2} with its hand #${computerMove._1}.")
     state.makeTransition(computerMove)
   }
 

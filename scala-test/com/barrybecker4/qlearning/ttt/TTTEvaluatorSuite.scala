@@ -79,6 +79,7 @@ class TTTEvaluatorSuite extends FunSuite {
     assertResult(0.32430275476060266) { doEval(1.0, TRIALS ) }
   }
 
+  /* data for bplot. takes long time
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
     var zmap = Map[(Double, Int), Double]()
     val numRunsSeq = Seq(100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200, 102400)
@@ -103,7 +104,7 @@ class TTTEvaluatorSuite extends FunSuite {
         println((for (eps <- epsSeq) yield zmap(eps, numRunsSeq(idx))).mkString(", "))
       else println
     }
-  }
+  }*/
 
   private def doEval(eps: Double, numRuns: Int): Double = {
     val table = new QTable(TTTBoard(), None, eps, new Random(1))

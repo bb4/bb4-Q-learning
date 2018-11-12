@@ -13,7 +13,7 @@ class QTableSuite extends FunSuite {
   test("QTable init (find number of possible game states)") {
     val qtable = new QTable(ChopsticksState(), None)
 
-    assertResult(strip("""numEntries=1160"""))
+    assertResult(strip("""numEntries=1094"""))
     { qtable.toString }
   }
 
