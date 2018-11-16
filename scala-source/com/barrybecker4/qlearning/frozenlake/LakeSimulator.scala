@@ -2,19 +2,11 @@ package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
-import LakeSimulator.{DEFAULT_TEST_TRIALS, MAX_MOVES, MAX_TEST_TRIALS, DEFAULT_WIND_FEQUENCY,
-  DEFAULT_EPSILON, DEFAULT_LEARNING_TRIALS}
+import LakeSimulatorConsts._
 import scala.util.Random
 
 
 object LakeSimulator extends App {
-  /** give up if not solved in this many moves */
-  val MAX_MOVES = 1000
-  val DEFAULT_WIND_FEQUENCY = 0.1
-  val DEFAULT_EPSILON = 0.3  // exploitation vs exploration
-  val DEFAULT_LEARNING_TRIALS = 10000
-  val DEFAULT_TEST_TRIALS = 1000
-  val MAX_TEST_TRIALS = 100000
 
   val simulator = new LakeSimulator()
   println("Let's simulate the frozen lake problem.")
@@ -22,6 +14,19 @@ object LakeSimulator extends App {
   println(s"and being mindful of the random wind, " +
     s"which can occasionally blow you in a random direction.\n")
   simulator.simulate()
+}
+
+object LakeSimulatorConsts {
+  /** give up if not solved in this many moves */
+  val MAX_MOVES = 1000
+  val DEFAULT_WIND_FEQUENCY = 0.1
+  val DEFAULT_EPSILON = 0.3  // exploitation vs exploration
+  val DEFAULT_LEARNING_TRIALS = 20000
+  val DEFAULT_TEST_TRIALS = 10000
+  val DEFAULT_LEARNING_RATE = 0.3f
+  val DEFAULT_FUTURE_REWARD_DISCOUNT = 0.7f
+  val MAX_TEST_TRIALS = 100000
+
 }
 
 /** Text based lake simulator.
@@ -76,14 +81,22 @@ class LakeSimulator {
 
     println("How many learning trials (100 - 1000000)?")
     val numTrials = input.getNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
-    println("What wind frequence (0 - 1)?")
+
+    println("What wind frequency (0 - 1)?")
     val windFrequency = input.getNumber(DEFAULT_WIND_FEQUENCY, 0, 1.0)
+
     println("What epsilon (0 - 1)? Higher value leads to more exploration, rather than exploitation.")
     val epsilon = input.getNumber(DEFAULT_EPSILON, 0, 1.0)
 
+    println("What learning rate (0 - 1]? Higher value should be used if less chance involved.")
+    val learningRate = input.getNumber(DEFAULT_LEARNING_RATE, 0.0, 1.0)
+
+    println("What future reward discount (0 - 1]? Higher value should be used if less chance involved.")
+    val frDiscount: Float = input.getNumber(DEFAULT_FUTURE_REWARD_DISCOUNT, 0.0, 1.0).toFloat
+
     val lake = Lake(windFrequency = windFrequency)
     table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
-    val learner = new QLearner[Direction](learningRate = 0.8f, futureRewardDiscount = 0.8f)
+    val learner = new QLearner[Direction](learningRate = DEFAULT_LEARNING_RATE, futureRewardDiscount = frDiscount)
 
     print("Learning...")
     learner.learn(table, numTrials)

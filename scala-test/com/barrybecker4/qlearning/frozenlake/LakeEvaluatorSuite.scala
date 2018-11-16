@@ -25,16 +25,29 @@ class LakeEvaluatorSuite extends FunSuite {
     assertResult(0.04575f) { doEval(0.6, 1000, lake = LARGE_CALM_7x10_LAKE) }
   }
 
-  test(s"evaluate Lake: eps = 0.6, runs = 1000 ") {
-    assertResult(0.1025f) { doEval(0.6, 1000 ) }
+  test(s"evaluate Lake: eps = 0.6, runs = 1000 learningRate = 0.6") {
+    assertResult(0.1025f) { doEval(0.6, learningRate = 0.6f, numRuns = 1000 ) }
   }
 
-  test(s"evaluate Lake: eps = 0.6, runs = 10000 ") {
-    assertResult(0.09675f) { doEval(0.6, 10000 ) }
+  test(s"evaluate Lake: eps = 0.6, runs = 10000 learningRate = 0.6") {
+    assertResult(0.09675f) { doEval(0.6, learningRate = 0.6f, numRuns = 10000 ) }
   }
+
+  test(s"evaluate Lake: eps = 0.6, runs = 1000 learningRate = 0.4 ") {
+    assertResult(0.092f) { doEval(0.6, learningRate = 0.4f, numRuns = 1000 ) }
+  }
+
+  test(s"evaluate Lake: eps = 0.6, runs = 10000 learningRate = 0.4") {
+    assertResult(0.09825f) { doEval(0.6, learningRate = 0.4f, numRuns = 10000 ) }
+  }
+
+  test(s"evaluate Lake: eps = 0.6, runs = 20000 learningRate = 0.4") {
+    assertResult(0.0615f) { doEval(0.6, learningRate = 0.4f, numRuns = 20000 ) }
+  }
+
 
   test(s"evaluate Lake: eps = 1.0, runs = 1000 ") {
-    assertResult(0.16425f) { doEval(1.0, 1000 ) }
+    assertResult(0.14575f) { doEval(1.0, 1000 ) }
   }
 
   /* Produces the plot data. This takes a long time to run.

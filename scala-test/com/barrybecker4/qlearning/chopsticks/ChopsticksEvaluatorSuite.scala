@@ -26,12 +26,24 @@ class ChopsticksEvaluatorSuite extends FunSuite {
     assertResult(0.34466503554283334) { doEval(0.3, 5000) }
   }
 
+  test("evaluate ttt: eps = 0.4, runs = 5000") {
+    assertResult(0.34466503554283334) { doEval(0.4, 5000) }
+  }
+
+  test("evaluate ttt: eps = 0.5, runs = 5000") {
+    assertResult(0.34466503554283334) { doEval(0.5, 5000) }
+  }
+
   test("evaluate ttt: eps = 0.1 runs = 5000") {
     assertResult(0.414656409605097) { doEval(0.1, 5000) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 10000") {
     assertResult(0.3758140555688104) { doEval(0.1, 10000) }
+  }
+
+  test("evaluate ttt: eps = 0.1 runs = 10000") {
+    assertResult(0.3758140555688104) { doEval(0.4, 10000) }
   }
 
   test("evaluate ttt: eps = 0.05 runs = 10000") {

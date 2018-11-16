@@ -26,7 +26,7 @@ class Input {
     * @return the user specified number.
     */
   def getNumber(default: Double, min: Double, max: Double): Double = {
-    print(s"[$default]")
+    print(s"[${default.toFloat}]")
     var answer = scanner.nextLine()
     if (answer.isEmpty) default
     else {

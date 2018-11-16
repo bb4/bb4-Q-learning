@@ -16,7 +16,7 @@ object ChopsticksPlayer extends App {
   */
 class ChopsticksPlayer {
 
-  private val table: QTable[TransType] = new QTable(ChopsticksState(), None, epsilon = 0.2)
+  private val table: QTable[TransType] = new QTable(ChopsticksState(), None, epsilon = 0.3)
   private val learner = new QLearner[TransType](learningRate = 0.8f, futureRewardDiscount = 0.99f)
   private val scanner = new Scanner(System.in)
 
@@ -28,7 +28,7 @@ class ChopsticksPlayer {
 
   private def learnHowToPlay(): Unit = {
     print("Learning...")
-    learner.learn(table, 20000)
+    learner.learn(table, 10000)
     println("...I just learned how to play.\n")
   }
 
