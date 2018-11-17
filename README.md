@@ -13,10 +13,10 @@ like a neural net for example.
 
 From git-bash, cygwin, cmd, or online IDE shell (such as [codenvy](https://codenvy.io)), do
 ```$xslt
-git clone https://github.com/bb4/bb4-Q-learning.git       (to clone the project repository locally)
-./gradlew                                                 (to build the project)
-./gradlew tasks                                           (to see what gradle tasks are available)
-./gradlew runTTT                                          (to run TicTacToe, for example)
+git clone https://github.com/bb4/bb4-Q-learning.git    (to clone the project repository locally)
+./gradlew runTTT                                       (to play Tic-Tac-Toe)
+./gradlew runFrozenLake                                (to run the Frozen Lake demo)
+./gradlew runChopsticks                                (to play finger chopsticks)
 ```
 
 ## Learn More
