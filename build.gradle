@@ -1,9 +1,12 @@
 description = 'Q-learning'
 group = 'com.barrybecker4'
-version = '0.1-SNAPSHOT'
+version = '1.0-SNAPSHOT'
 
 apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4.gradle'
 
+plugins {
+    id "com.github.maiflai.scalatest" version "0.19" // needed to run scala tests
+}
 project.archivesBaseName = 'Q-learning-ttt'
 mainClassName = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
 
