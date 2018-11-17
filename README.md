@@ -11,8 +11,13 @@ like a neural net for example.
 
 ## How to Run
 
-From git-bash, cygwin, cmd, or online IDE shell, do
- 
+From git-bash, cygwin, cmd, or online IDE shell (such as [codenvy](https://codenvy.io)), do
+```$xslt
+git clone https://github.com/bb4/bb4-Q-learning.git       (to clone the project repository locally)
+./gradlew                                                 (to build the project)
+./gradlew tasks                                           (to see what gradle tasks are available)
+./gradlew runTTT                                          (to run TicTacToe, for example)
+```
 
 ## Learn More
 
