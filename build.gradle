@@ -29,5 +29,11 @@ task runFrozenLake(type: JavaExec) {
     group = 'application'
 }
 
+task runChopsticks(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.barrybecker4.qlearning.chopsticks.ChopsticksPlayer'
+    group = 'application'
+}
+
 // This allows publishing of the A-star library to Sonatype
 apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4-publish.gradle'
