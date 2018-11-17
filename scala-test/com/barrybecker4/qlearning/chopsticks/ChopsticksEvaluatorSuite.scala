@@ -14,77 +14,77 @@ class ChopsticksEvaluatorSuite extends FunSuite {
   val TRIALS = 20000
 
 
-  test("evaluate ttt: eps = 0.3, runs = 50") {
+  test("evaluate chopsticks: eps = 0.3, runs = 50") {
     assertResult(0.726558505528403) { doEval(0.3, 50) }
   }
 
-  test("evaluate ttt: eps = 0.1 runs = 500") {
+  test("evaluate chopsticks: eps = 0.1 runs = 500") {
     assertResult(0.6502501375063329) { doEval(0.1, 500) }
   }
 
-  test("evaluate ttt: eps = 0.3, runs = 5000") {
+  test("evaluate chopsticks: eps = 0.3, runs = 5000") {
     assertResult(0.34466503554283334) { doEval(0.3, 5000) }
   }
 
-  test("evaluate ttt: eps = 0.4, runs = 5000") {
-    assertResult(0.34466503554283334) { doEval(0.4, 5000) }
+  test("evaluate chopsticks: eps = 0.4, runs = 5000") {
+    assertResult(0.30646527025205716) { doEval(0.4, 5000) }
   }
 
-  test("evaluate ttt: eps = 0.5, runs = 5000") {
-    assertResult(0.34466503554283334) { doEval(0.5, 5000) }
+  test("evaluate chopsticks: eps = 0.5, runs = 5000") {
+    assertResult(0.2728456113842288) { doEval(0.5, 5000) }
   }
 
-  test("evaluate ttt: eps = 0.1 runs = 5000") {
+  test("evaluate chopsticks: eps = 0.1 runs = 5000") {
     assertResult(0.414656409605097) { doEval(0.1, 5000) }
   }
 
-  test("evaluate ttt: eps = 0.1 runs = 10000") {
+  test("evaluate chopsticks: eps = 0.1 runs = 10000") {
     assertResult(0.3758140555688104) { doEval(0.1, 10000) }
   }
 
-  test("evaluate ttt: eps = 0.1 runs = 10000") {
-    assertResult(0.3758140555688104) { doEval(0.4, 10000) }
+  test("evaluate chopsticks: eps = 0.4 runs = 10000") {
+    assertResult(0.21636660090180337) { doEval(0.4, 10000) }
   }
 
-  test("evaluate ttt: eps = 0.05 runs = 10000") {
+  test("evaluate chopsticks: eps = 0.05 runs = 10000") {
     assertResult(0.4058155383208999) { doEval(0.05, 10000) }
   }
 
 
 
-//  test(s"evaluate ttt: eps = 0.3, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 0.3, runs = $TRIALS ") {
 //    assertResult(0.48811130126635904) { doEval(0.3, TRIALS ) }
 //  }
 //
-//  test(s"evaluate ttt: eps = 0.4, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 0.4, runs = $TRIALS ") {
 //    assertResult(0.4457547569401316) { doEval(0.4, TRIALS ) }
 //  }
 
-  test(s"evaluate ttt: eps = 0.5, runs = $TRIALS ") {
+  test(s"evaluate chopsticks: eps = 0.5, runs = $TRIALS ") {
     assertResult(0.11244032849430617) { doEval(0.5, TRIALS ) }
   }
 
-//  test(s"evaluate ttt: eps = 0.6, runs = $TRIALS") {
+//  test(s"evaluate chopsticks: eps = 0.6, runs = $TRIALS") {
 //    assertResult(0.36849077331230623) { doEval(0.6, TRIALS ) }
 //  }
 //
-//  test(s"evaluate ttt: eps = 0.7, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 0.7, runs = $TRIALS ") {
 //    assertResult(0.3454863442625571) { doEval(0.7, TRIALS ) }
 //  }
 //
-//  test(s"evaluate ttt: eps = 0.8, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 0.8, runs = $TRIALS ") {
 //    assertResult(0.3155669600008248) { doEval(0.8, TRIALS ) }
 //  }
 //
-//  test(s"evaluate ttt: eps = 0.9, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 0.9, runs = $TRIALS ") {
 //    assertResult(0.3165364115611281) { doEval(0.9, TRIALS ) }
 //  }
 //
-//  test(s"evaluate ttt: eps = 1.0, runs = $TRIALS ") {
+//  test(s"evaluate chopsticks: eps = 1.0, runs = $TRIALS ") {
 //    assertResult(0.32430275476060266) { doEval(1.0, TRIALS ) }
 //  }
 
-  /* For the plot. Takes a long time. */
+  /* For the plot. Takes a long time.
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
     var zmap = Map[(Double, Int), Double]()
     val numRunsSeq = Seq(100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200) //, 102400)
@@ -110,7 +110,7 @@ class ChopsticksEvaluatorSuite extends FunSuite {
         println((for (eps <- epsSeq) yield zmap(eps, numRunsSeq(idx))).mkString(", "))
       else println
     }
-  }
+  }*/
 
   private def doEval(eps: Double, numRuns: Int): Double = {
     val table = new QTable(ChopsticksState(), None, eps, new Random(1))
