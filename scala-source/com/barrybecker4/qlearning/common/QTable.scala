@@ -31,7 +31,8 @@ object QTable {
   * @param initialState starting state (optional). If provided, then all other states are inferred from this one.
   * @param theTable (Optional) table of all possible states and possible transitions from them.
   *            If not provided, then all states will be inferred from the starting state.
-  * @param epsilon percent of the time to make a random transition instead of make the best one
+  * @param epsilon percent of the time to make a random transition instead of making the best one.
+  *                It actually start out higher than this, and asymptotically approaches this value.
   * @param rnd used for deterministic unit tests.
   * @author Barry Becker
   */

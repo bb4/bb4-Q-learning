@@ -1,15 +1,22 @@
 package com.barrybecker4.qlearning.ttt
 
 import java.util.Random
-import com.barrybecker4.qlearning.common.{QLearner, QTable, RmsEvaluator}
+
+import com.barrybecker4.qlearning.common.{ChartDataGenerator, QLearner, QTable, RmsEvaluator}
 import org.scalatest.FunSuite
 
 
+/**
+  * From experimentation, its best to have
+  * futureRewardDiscount = 1.0  (since the game is deterministic)
+  * learningRate = 0.8 (but it does not seem to matter much anything in the range 0.7 - 1.0 seems fine)
+  * eps = 0.9  (but anything between 0.8 and 0.95 gives similar results)
+  */
 class TTTEvaluatorSuite extends FunSuite {
 
-  private val goldStandard = new QTable(TTTBoard(), None, epsilon = 0.8, new Random(1))
-  private val learner = new QLearner[Int]()
-  learner.learn(goldStandard, 500000)
+  private val goldStandard = new QTable(TTTBoard(), None, epsilon = 0.9, new Random(1))
+  private val learner = new QLearner[Int](learningRate = 0.8f, futureRewardDiscount = 1.0f)
+  learner.learn(goldStandard, 1000000)
   val TRIALS = 20000
 
 
@@ -29,26 +36,51 @@ class TTTEvaluatorSuite extends FunSuite {
     assertResult(0.7420410042560847) { doEval(0.1, 5000) }
   }
 
-
+  test(s"evaluate ttt: eps = 0.4, runs = 100000 learningRate=0.9") {
+    assertResult(0.168818555104488) { doEval(0.4, 100000, learningRate = 0.9f ) }
+  }
   test(s"evaluate ttt: eps = 0.8, runs = 100000 ") {
     assertResult(0.0034556237397112203) { doEval(0.8, 100000 ) }
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 ") {
     assertResult(1.0095078758163613E-4) { doEval(0.9, 100000 ) }
   }
-  test(s"evaluate ttt: eps = 0.95, runs = 100000 ") {
-    assertResult(3.29072655512818E-5) { doEval(0.95, 100000 ) }
-  }
   test(s"evaluate ttt: eps = 0.99, runs = 100000 ") {
-    assertResult(1.90416303725586E-5) { doEval(0.99, 100000 ) }
+    assertResult( 1.90416303725586E-5) { doEval(0.99, 100000 ) }
   }
-  test(s"evaluate ttt: eps = 1.0, runs = 100000 ") {
-    assertResult(1.4585166309247292E-4) { doEval(1.0, 100000 ) }
+  test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.4") {
+    assertResult(0.01407768602779713) { doEval(0.9, 100000, learningRate = 0.4f ) }
   }
-
+  /*
+  test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.6") {
+    assertResult(0.0013632256561776786) { doEval(0.9, 100000, learningRate = 0.6f ) }
+  }
+  test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.8") {
+    assertResult(1.0095078758163613E-4) { doEval(0.9, 100000, learningRate = 0.8f ) }
+  }
+  test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.9") {
+    assertResult(1.7663773026035155E-5) { doEval(9.0, 100000, learningRate = 0.9f ) }
+  }
+  test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 1.0") {
+    assertResult(0.0) { doEval(9.0, 100000, learningRate = 1.0f ) }
+  }
+  test(s"evaluate ttt: eps = 1.0, runs = 100000 learningRate = 1.0") {
+    assertResult(0.0) { doEval(1.0, 100000, learningRate = 1.0f ) }
+  }
+  test(s"evaluate ttt: eps = 1.0, runs = 100000 learningRate=1.0 frd=0.9") {
+    assertResult(0.12667115151916478) {
+      doEval(1.0, 100000, learningRate = 1.0f , futureRewardDiscount = 0.9f)
+    }
+  }*/
 
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS ") {
     assertResult(0.48811130126635904) { doEval(0.3, TRIALS ) }
+  }
+  test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=0.9") {
+    assertResult(0.473293682285103) { doEval(0.3, TRIALS, learningRate = 0.9f ) }
+  }
+  test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=1.0") {
+    assertResult(0.4630197967905414) { doEval(0.3, TRIALS, learningRate = 1.0f ) }
   }
 
   test(s"evaluate ttt: eps = 0.4, runs = $TRIALS ") {
@@ -79,35 +111,22 @@ class TTTEvaluatorSuite extends FunSuite {
     assertResult(0.32430275476060266) { doEval(1.0, TRIALS ) }
   }
 
-  /* data for bplot. takes long time
+  /* data for plot. takes long time. *
   test("build data for eps = 0 to 1 step 0.05, and runs = 100, 200, ... 51,200") {
-    var zmap = Map[(Double, Int), Double]()
-    val numRunsSeq = Seq(100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200, 102400)
-    val epsSeq = for (i <- 0 to 20) yield 0.05 * i
 
-    for (numRuns <- numRunsSeq) {
-      for (eps <- epsSeq) {
-        zmap += (eps, numRuns) -> (1.0 - doEval(eps, numRuns) )
-      }
-    }
+    val epsSeq = Seq(0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1.0f)
+    val futureRewardDiscountSeq = Seq(1.0f)
+    val learningRateSeq = Seq(0.9f, 0.99f, 1.0f)
+    val numRunsSeq = Seq(200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200, 102400)
 
-    // generate a csv file contents that can be imported into Plotly to show a surface
-    // x = eps, y = numRuns z = accuracy = 1 - error
-    val headers = Seq("eps, numRows") ++ (for (eps <- epsSeq) yield s"z[${eps.toFloat}]")
-    println(headers.mkString(", "))
-
-    for (idx <- 0 until Math.max(numRunsSeq.length, epsSeq.length)) {
-      val epsValue = if (idx < epsSeq.length) epsSeq(idx).toFloat else ""
-      val numRowsValue = if (idx < numRunsSeq.length) numRunsSeq(idx) else ""
-      print(epsValue + ", " + numRowsValue + ", ")
-      if (idx < numRunsSeq.length)
-        println((for (eps <- epsSeq) yield zmap(eps, numRunsSeq(idx))).mkString(", "))
-      else println
-    }
+    ChartDataGenerator.createEpsByNumRunsData(epsSeq, numRunsSeq, learningRateSeq, futureRewardDiscountSeq, doEval)
   }*/
 
-  private def doEval(eps: Double, numRuns: Int): Double = {
+  private def doEval(eps: Double, numRuns: Int,
+                     learningRate: Float = QLearner.DEFAULT_LEARNING_RATE,
+                     futureRewardDiscount: Float = QLearner.DEFAULT_FUTURE_REWARD_DISCOUNT): Double = {
     val table = new QTable(TTTBoard(), None, eps, new Random(1))
+    val learner = new QLearner[Int](learningRate, futureRewardDiscount)
     learner.learn(table, numRuns)
     val evaluator = new RmsEvaluator(table, goldStandard)
     evaluator.evaluate()

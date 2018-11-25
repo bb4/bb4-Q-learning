@@ -6,7 +6,7 @@ import com.barrybecker4.qlearning.common.QLearner._
 object QLearner {
 
   /** The step size toward newly acquired information - referred to as learning rate.
-    * It determines to what extent information overrides old. If 0, then the agent learn nothing,
+    * It determines to what extent information overrides old. If 0, then the agent learns nothing,
     * while a factor of 1 makes the agent consider only the most recent information.
     * In fully deterministic environments, a learning rate of 1 is optimal.
     * When there is chance involved, the algorithm converges under some technical conditions on the learning rate

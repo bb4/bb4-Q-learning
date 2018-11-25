@@ -14,6 +14,9 @@ like a neural net for example.
 From git-bash, cygwin, cmd, or online IDE shell (such as [codenvy](https://codenvy.io)), do
 ```$xslt
 git clone https://github.com/bb4/bb4-Q-learning.git    (to clone the project repository locally)
+```
+then, in the newly created project directory, do one of
+```
 ./gradlew runTTT                                       (to play Tic-Tac-Toe)
 ./gradlew runFrozenLake                                (to run the Frozen Lake demo)
 ./gradlew runChopsticks                                (to play finger chopsticks)
