@@ -21,18 +21,21 @@ jar {
 }
 
 task runTTT(type: JavaExec) {
+    standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
     group = 'application'
 }
 
 task runFrozenLake(type: JavaExec) {
+    standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.barrybecker4.qlearning.frozenlake.LakeSimulator'
     group = 'application'
 }
 
 task runChopsticks(type: JavaExec) {
+    standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.barrybecker4.qlearning.chopsticks.ChopsticksPlayer'
     group = 'application'
