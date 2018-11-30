@@ -5,7 +5,134 @@ description = 'Q-learning'
 group = 'com.barrybecker4'
 version = '1.0-SNAPSHOT'
 
-apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4.gradle'
+
+///
+
+/**
+ * This is common gradle build configuration for all bb4 projects.
+ * Any project on github can include it using
+ * apply from: 'https://raw.github.com/barrybecker4/bb4-common/master/bb4.gradle'
+ * Both Java and Scala are fully supported. Most projects have been ported to Scala.
+ */
+apply plugin: 'java'
+apply plugin: 'scala'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+apply plugin: 'project-report'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'signing'
+defaultTasks 'build'
+
+/**
+ * Secret credentials for Sonatype and signing
+ * should be defined in ~/.gradle/gradle.properties if you need them.
+ * Only sign the artifacts if it is a final release.
+ */
+ext {
+    scalaVersion = '2.11.11'
+    vecmathVersion = '1.3.1'
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+if (!hasProperty('sonatypeUsername')) {
+    ext.sonatypeUsername = ''
+}
+if (!hasProperty('sonatypePassword')) {
+    ext.sonatypePassword = ''
+}
+
+/** all bb4 projects use this directory layout. */
+sourceSets {
+    main {
+        java {
+            srcDir 'source'
+        }
+        scala {
+            srcDir 'scala-source'
+        }
+        resources {
+            srcDirs 'source', 'scala-source'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        scala {
+            srcDir 'scala-test'
+        }
+        resources {
+            srcDirs 'test', 'scala-test'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    // this is where bb4 release artifacts will come from
+    maven { url "http://repo1.maven.org/maven2/" }
+    // this is where SNAPSHOT releases will come from
+    maven { url "https://oss.sonatype.org/content/groups/staging" }
+    // some thirdparty jars from here
+    maven { url "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases" }
+}
+
+// Suppress javadoc warning when using java 8.
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:deprecation" << "-Werror"
+            // "-Xlint:unchecked" <<
+        }
+    }
+}
+
+/** check for updates every build */
+configurations.all {
+    resolutionStrategy {
+        if (!project.hasProperty('debugDeps')) {
+            failOnVersionConflict()
+        }
+        cacheDynamicVersionsFor 0, 'seconds'
+        cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+dependencies {
+
+    // Java dependencies
+    compile "java3d:vecmath:$vecmathVersion"
+    testCompile 'junit:junit:4.11'
+
+    // Scala dependencies
+    compile("org.scala-lang:scala-library:$scalaVersion") { force = true }
+    testCompile 'org.scalatest:scalatest_2.12:3.0.5'
+    // Used to generate html unit test report (consider switching to flexmark)
+    testRuntime 'org.pegdown:pegdown:1.6.0'
+}
+
+task copyToLib(dependsOn: jar, type: Copy) {
+    description = "Copies the downloaded dependencies to the lib directory so they can be deployed"
+    into "build/libs"
+    from configurations.runtime
+}
+
+/* remove this deprecated version of this method once everything is 4.x or above
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10.2'
+}*/
+
+wrapper {
+    gradleVersion = '4.10.2'
+}
+///
 
 project.archivesBaseName = 'Q-learning-ttt'
 mainClassName = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
@@ -18,6 +145,10 @@ jar {
                 'provider': 'gradle',
                 'Main-Class': mainClassName
     }
+}
+
+dependencies {
+    compile group: 'co.theasi', name: 'plotly_2.11', version: '0.2.0'
 }
 
 task runTTT(type: JavaExec) {
