@@ -81,13 +81,11 @@ class LakeEvaluatorSuite extends FunSuite {
 
   test(s"evaluate Lake: eps = 0.2, runs = 20000 learningRate = 0.3, frd = 0.4") {
     assertResult(0.01675f) {doEval(0.2, learningRate = 0.4f, numRuns = 20000, frd = 0.4f )}
-  }*/
+  }
 
   test(s"evaluate Lake: eps = 0.2, runs = 20000 learningRate = 0.3, frd = 0.3") {
-    assertResult(0.00925f) {
-      doEval(0.2, learningRate = 0.4f, numRuns = 20000, frd = 0.3f )
-    }
-  }
+    assertResult(0.00925f) {  doEval(0.2, learningRate = 0.4f, numRuns = 20000, frd = 0.3f )}
+  }*/
 
 
   /* data for plot. takes long time.
