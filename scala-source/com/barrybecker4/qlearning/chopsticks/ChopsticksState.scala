@@ -2,8 +2,10 @@ package com.barrybecker4.qlearning.chopsticks
 
 import com.barrybecker4.qlearning.chopsticks.ChopsticksState.{DONE_STATE, TransType}
 import com.barrybecker4.qlearning.common.State
+
 import scala.util.Random
 import ChopsticksState.NUM_FINGERS_PER_HAND
+import scala.math.Ordering.Float.TotalOrdering
 
 
 object ChopsticksState {
@@ -100,7 +102,13 @@ case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
     *  If more than one best, choose randomly from among them.
     */
   override def selectBestAction(actionList: Seq[(TransType, Float)], rnd: Random): (TransType, Float) = {
-    val bestValue = if (isFirstPlayerMove) actionList.map(_._2).max else actionList.map(_._2).min
+    //implicit val order: Double.TotalOrdering.type = Ordering.Double.TotalOrdering
+    import scala.math.Ordering.Float.TotalOrdering
+    val bestValue1 = Seq[Float](0.3f, 0.5f, 0.1f, 0.8f).min
+
+    val bestValue =
+      if (isFirstPlayerMove) actionList.map(_._2).max
+      else actionList.map(_._2).min
     val bestActions = actionList.filter(_._2 == bestValue)
     bestActions(rnd.nextInt(bestActions.length))
   }

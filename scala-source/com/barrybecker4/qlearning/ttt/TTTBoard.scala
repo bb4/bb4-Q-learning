@@ -2,6 +2,7 @@ package com.barrybecker4.qlearning.ttt
 
 import com.barrybecker4.qlearning.common.State
 import scala.util.Random
+import scala.math.Ordering.Float.TotalOrdering
 
 /** Immutable tic-tac-toe board state and its operations.
   * Currently the size of the QTable is 5,478, but could be reduced by a factor of 8 by taking advantage of symmetry.

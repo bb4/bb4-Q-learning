@@ -9,7 +9,7 @@ class Input {
 
   /** @param queryMsg the prompt
     * @param alternatives set of possible responses (lower case)
-    * @return given a prompt return one of several specified upper case characters fro the user
+    * @return given a prompt return one of several specified upper case characters from the user
     */
   def charQuery(queryMsg: String, alternatives: Seq[Character], default: Option[Character] = None): Character = {
     val theDefault = if (default.isDefined) default.get else alternatives.head

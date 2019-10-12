@@ -3,6 +3,7 @@ package com.barrybecker4.qlearning.frozenlake
 import com.barrybecker4.qlearning.common.State
 import scala.util.Random
 import Direction.Direction
+import scala.math.Ordering.Float.TotalOrdering
 
 
 /** Immutable state of the lake.

@@ -17,12 +17,12 @@ object ChartDataGenerator {
 
     for (eps <- epsSeq) {
       for (frd <- futureRewardDiscountSeq) {
-        println("eps = " + eps + " futureRewardDiscount = " + frd)
+        println(s"eps = $eps  futureRewardDiscount = $frd")
         println(headers.mkString(", "))
         for (idx <- 0 until Math.max(numRunsSeq.length, learningRateSeq.length)) {
           val learningRateValue = if (idx < learningRateSeq.length) learningRateSeq(idx) else ""
           val numRowsValue = if (idx < numRunsSeq.length) numRunsSeq(idx) else ""
-          print(learningRateValue + ", " + numRowsValue + ", ")
+          print(s"$learningRateValue, $numRowsValue, ")
           if (idx < numRunsSeq.length) {
             val vals = for (lr <- learningRateSeq) yield zmap((eps, frd, lr, numRunsSeq(idx)))
             println(vals.mkString(", "))
@@ -48,12 +48,12 @@ object ChartDataGenerator {
 
     for (learningRate <- learningRateSeq) {
       for (frd <- futureRewardDiscountSeq) {
-        println("learningRate = " + learningRate + " futureRewardDiscount = " + frd)
+        println(s"learningRate = $learningRate futureRewardDiscount = $frd")
         println(headers.mkString(", "))
         for (idx <- 0 until Math.max(numRunsSeq.length, epsSeq.length)) {
           val epsValue = if (idx < epsSeq.length) epsSeq(idx) else ""
           val numRowsValue = if (idx < numRunsSeq.length) numRunsSeq(idx) else ""
-          print(epsValue + ", " + numRowsValue + ", ")
+          print(s"epsValue, numRowsValue, ")
           if (idx < numRunsSeq.length) {
             val vals = for (eps <- epsSeq) yield zmap((eps, frd, learningRate, numRunsSeq(idx)))
             println(vals.mkString(", "))
