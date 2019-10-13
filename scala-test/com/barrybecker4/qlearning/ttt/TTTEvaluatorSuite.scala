@@ -21,35 +21,35 @@ class TTTEvaluatorSuite extends FunSuite {
 
 
   test("evaluate ttt: eps = 0.3, runs = 50") {
-    assertResult(0.8949920945148284) { doEval(0.3, 50) }
+    assertResult(0.8950898407190325) { doEval(0.3, 50) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 500") {
-    assertResult(0.8821908806409358) { doEval(0.1, 500) }
+    assertResult(0.8817548205341939) { doEval(0.1, 500) }
   }
 
   test("evaluate ttt: eps = 0.3, runs = 5000") {
-    assertResult(0.7390373240758076) { doEval(0.3, 5000) }
+    assertResult(0.7381020134189465) { doEval(0.3, 5000) }
   }
 
   test("evaluate ttt: eps = 0.1 runs = 5000") {
-    assertResult(0.7420410042560847) { doEval(0.1, 5000) }
+    assertResult(0.742327008002397) { doEval(0.1, 5000) }
   }
 
   test(s"evaluate ttt: eps = 0.4, runs = 100000 learningRate=0.9") {
-    assertResult(0.168818555104488) { doEval(0.4, 100000, learningRate = 0.9f ) }
+    assertResult(0.172922081103319) { doEval(0.4, 100000, learningRate = 0.9f ) }
   }
   test(s"evaluate ttt: eps = 0.8, runs = 100000 ") {
-    assertResult(0.0034556237397112203) { doEval(0.8, 100000 ) }
+    assertResult(0.003036032810401645) { doEval(0.8, 100000 ) }
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 ") {
-    assertResult(1.0095078758163613E-4) { doEval(0.9, 100000 ) }
+    assertResult(9.993831398032048E-5) { doEval(0.9, 100000 ) }
   }
   test(s"evaluate ttt: eps = 0.99, runs = 100000 ") {
-    assertResult( 1.90416303725586E-5) { doEval(0.99, 100000 ) }
+    assertResult( 1.3428868824026785E-4) { doEval(0.99, 100000 ) }
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.4") {
-    assertResult(0.01407768602779713) { doEval(0.9, 100000, learningRate = 0.4f ) }
+    assertResult(0.01376660617984976) { doEval(0.9, 100000, learningRate = 0.4f ) }
   }
   /*
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.6") {
@@ -74,41 +74,41 @@ class TTTEvaluatorSuite extends FunSuite {
   }*/
 
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS ") {
-    assertResult(0.48811130126635904) { doEval(0.3, TRIALS ) }
+    assertResult(0.48519802707809007) { doEval(0.3, TRIALS ) }
   }
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=0.9") {
-    assertResult(0.473293682285103) { doEval(0.3, TRIALS, learningRate = 0.9f ) }
+    assertResult(0.4699262661940876) { doEval(0.3, TRIALS, learningRate = 0.9f ) }
   }
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=1.0") {
-    assertResult(0.4630197967905414) { doEval(0.3, TRIALS, learningRate = 1.0f ) }
+    assertResult(0.46826683568834904) { doEval(0.3, TRIALS, learningRate = 1.0f ) }
   }
 
   test(s"evaluate ttt: eps = 0.4, runs = $TRIALS ") {
-    assertResult(0.4457547569401316) { doEval(0.4, TRIALS ) }
+    assertResult(0.4508351348186567) { doEval(0.4, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 0.5, runs = $TRIALS ") {
-    assertResult(0.4119214573861505) { doEval(0.5, TRIALS ) }
+    assertResult(0.4070558295003606) { doEval(0.5, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 0.6, runs = $TRIALS") {
-    assertResult(0.36849077331230623) { doEval(0.6, TRIALS ) }
+    assertResult(0.37852552055271804) { doEval(0.6, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 0.7, runs = $TRIALS ") {
-    assertResult(0.3454863442625571) { doEval(0.7, TRIALS ) }
+    assertResult(0.34356752354968684) { doEval(0.7, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 0.8, runs = $TRIALS ") {
-    assertResult(0.3155669600008248) { doEval(0.8, TRIALS ) }
+    assertResult(0.3118899265235139) { doEval(0.8, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 0.9, runs = $TRIALS ") {
-    assertResult(0.3165364115611281) { doEval(0.9, TRIALS ) }
+    assertResult(0.317812028658438) { doEval(0.9, TRIALS ) }
   }
 
   test(s"evaluate ttt: eps = 1.0, runs = $TRIALS ") {
-    assertResult(0.32430275476060266) { doEval(1.0, TRIALS ) }
+    assertResult(0.33184374324555915) { doEval(1.0, TRIALS ) }
   }
 
   /* data for plot. takes long time. *

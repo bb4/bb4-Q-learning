@@ -21,17 +21,17 @@ class QTableSuite extends FunSuite {
     val qtable = new QTable(ChopsticksState(), None, rnd = new Random(1L))
     val b = stateToCheck
     val actions = qtable.getActions(b)
-    assertResult("((2,1),0.0), ((1,0),0.0), ((2,2),0.0), ((1,1),0.0), ((1,2),0.0)") {
+    assertResult("((2,1),0.0), ((1,1),0.0), ((1,2),0.0), ((1,0),0.0), ((2,2),0.0)") {
       actions.toList.mkString(", ")
     }
-    assertResult(((2, 2), 0.0)) {qtable.getNextAction(b, 0)}
+    assertResult(((1, 2), 0.0)) {qtable.getNextAction(b, 0)}
   }
 
   test("getNextMove, 1 episode (should be random") {
     val qtable = new QTable(ChopsticksState(), None, rnd = new Random(2L))
     val b = stateToCheck
     val actions = qtable.getActions(b)
-    assertResult("((2,1),0.0), ((1,0),0.0), ((2,2),0.0), ((1,1),0.0), ((1,2),0.0)") {
+    assertResult("((2,1),0.0), ((1,1),0.0), ((1,2),0.0), ((1,0),0.0), ((2,2),0.0)") {
       actions.toList.mkString(", ")
     }
     assertResult(((2, 1), 0)) {qtable.getNextAction(b, episodeNumber = 1)}
@@ -41,7 +41,7 @@ class QTableSuite extends FunSuite {
     val qtable = new QTable(ChopsticksState(), None, rnd = new Random(2L))
     val b = stateToCheck
     val actions = qtable.getActions(b)
-    assertResult("((2,1),0.0), ((1,0),0.0), ((2,2),0.0), ((1,1),0.0), ((1,2),0.0)") {
+    assertResult("((2,1),0.0), ((1,1),0.0), ((1,2),0.0), ((1,0),0.0), ((2,2),0.0)") {
       actions.toList.mkString(", ")
     }
     assertResult(((2, 1), 0.0)) {qtable.getNextAction(b, episodeNumber = 10)}
@@ -51,7 +51,9 @@ class QTableSuite extends FunSuite {
     val qtable = new QTable(ChopsticksState(), None, rnd = new Random(2L))
     val b = stateToCheck
     val actions = qtable.getActions(b)
-    assertResult("((2,1),0.0), ((1,0),0.0), ((2,2),0.0), ((1,1),0.0), ((1,2),0.0)") {actions.toList.mkString(", ")}
+    assertResult("((2,1),0.0), ((1,1),0.0), ((1,2),0.0), ((1,0),0.0), ((2,2),0.0)") {
+      actions.toList.mkString(", ")
+    }
     assertResult(((2, 1), 0.0)) {qtable.getNextAction(b, 100)}
   }
 }

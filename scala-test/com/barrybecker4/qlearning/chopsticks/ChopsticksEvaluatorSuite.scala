@@ -19,51 +19,51 @@ class ChopsticksEvaluatorSuite extends FunSuite {
 
 
   test("evaluate chopsticks: eps = 0.3, runs = 50") {
-    assertResult(0.7283887344987697) { doEval(0.3, 50) }
+    assertResult(0.7282194248632798) { doEval(0.3, 50) }
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 500") {
-    assertResult(0.6518589732670139) { doEval(0.1, 500) }
+    assertResult(0.6490735916036947) { doEval(0.1, 500) }
   }
 
   test("evaluate chopsticks: eps = 0.3, runs = 5000") {
-    assertResult(0.34719482969594057) { doEval(0.3, 5000) }
+    assertResult(0.3467494861956071) { doEval(0.3, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.4, runs = 5000") {
-    assertResult(0.3236613304328652) { doEval(0.4, 5000) }
+    assertResult(0.3149084939610007) { doEval(0.4, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.5, runs = 5000") {
-    assertResult(0.2627980589438689) { doEval(0.5, 5000) }
+    assertResult(0.2604145598080305) { doEval(0.5, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.7, runs = 5000") {
-    assertResult(0.20076433692802959) { doEval(0.7, 5000) }
+    assertResult(0.19613598299626517) { doEval(0.7, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.9, runs = 5000") {
-    assertResult(0.1392497901805396) { doEval(0.9, 5000) }
+    assertResult(0.14769597319628783) { doEval(0.9, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 5000") {
-    assertResult(0.43229105391483447) { doEval(0.1, 5000) }
+    assertResult(0.42645091778230876) { doEval(0.1, 5000) }
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 10000") {
-    assertResult(0.38909243921931785) { doEval(0.1, 10000) }
+    assertResult(0.3812735970189622) { doEval(0.1, 10000) }
   }
 
   test("evaluate chopsticks: eps = 0.4 runs = 10000") {
-    assertResult(0.2300521364720652) { doEval(0.4, 10000) }
+    assertResult(0.22505485060640595) { doEval(0.4, 10000) }
   }
 
   test("evaluate chopsticks: eps = 0.6 runs = 10000") {
-    assertResult(0.11276009903493067) { doEval(0.6, 10000) }
+    assertResult(0.12035791477132503) { doEval(0.6, 10000) }
   }
 
   test("evaluate chopsticks: eps = 0.8 runs = 10000") {
-    assertResult(0.0684340056121889) { doEval(0.8, 10000) }
+    assertResult(0.0644372003576509) { doEval(0.8, 10000) }
   }
 /*
   test("evaluate chopsticks: eps = 0.95 runs = 10000") {
@@ -88,7 +88,7 @@ class ChopsticksEvaluatorSuite extends FunSuite {
   }
 */
   test("evaluate chopsticks: eps = 0.6 runs = 100000, learningRate = 0.95") {
-    assertResult(8.101917822589827E-4) { doEval(0.6, 100000, learningRate = 0.95f) }
+    assertResult(4.0499788335011155E-5) { doEval(0.6, 100000, learningRate = 0.95f) }
   }
 
   test("evaluate chopsticks: eps = 0.6 runs = 100000, learningRate = 1.0") {
