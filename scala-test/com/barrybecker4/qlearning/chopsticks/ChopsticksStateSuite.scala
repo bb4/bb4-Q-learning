@@ -1,10 +1,10 @@
 package com.barrybecker4.qlearning.chopsticks
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 
-class ChopsticksStateSuite extends FunSuite {
+class ChopsticksStateSuite extends AnyFunSuite {
 
   test("construct board and serialize") {
     val b = ChopsticksState((1, 2), (3, 3))

@@ -2,7 +2,6 @@ package com.barrybecker4.qlearning.common
 
 object ChartDataGenerator {
 
-
   /**
     * Prints a table of data that can be imported into Plotly to show a 3D surface graph.
     * @param evaluator a function that returns fitness given q-learning parameters.

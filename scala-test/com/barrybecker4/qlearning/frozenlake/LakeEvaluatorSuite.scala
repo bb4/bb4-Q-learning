@@ -2,7 +2,7 @@ package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.common.{ChartDataGenerator, QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Random
 import LakeEvaluatorSuite._
@@ -28,7 +28,7 @@ object LakeEvaluatorSuite {
   * learningRate = 0.3
   * * eps = 0.3
   */
-class LakeEvaluatorSuite extends FunSuite {
+class LakeEvaluatorSuite extends AnyFunSuite {
 
 
   test(s"evaluate windy Lake: eps = 0.6, runs = 1000 ") {

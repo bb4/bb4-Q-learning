@@ -2,8 +2,8 @@ package com.barrybecker4.qlearning.ttt
 
 import java.util.Random
 
-import com.barrybecker4.qlearning.common.{ChartDataGenerator, QLearner, QTable, RmsEvaluator}
-import org.scalatest.FunSuite
+import com.barrybecker4.qlearning.common.{QLearner, QTable, RmsEvaluator}
+import org.scalatest.funsuite.AnyFunSuite
 
 
 /**
@@ -12,7 +12,7 @@ import org.scalatest.FunSuite
   * learningRate = 0.8 (but it does not seem to matter much anything in the range 0.7 - 1.0 seems fine)
   * eps = 0.9  (but anything between 0.8 and 0.95 gives similar results)
   */
-class TTTEvaluatorSuite extends FunSuite {
+class TTTEvaluatorSuite extends AnyFunSuite {
 
   private val goldStandard = new QTable(TTTBoard(), None, epsilon = 0.9, new Random(1))
   private val learner = new QLearner[Int](learningRate = 0.8f, futureRewardDiscount = 1.0f)

@@ -1,24 +1,14 @@
 plugins {
     id "com.github.maiflai.scalatest" version "0.25" // needed to run scala tests
 }
-description = 'Q-learning'
+description = 'Q-learning for Tic-Tac-Toe'
 group = 'com.barrybecker4'
 version = '1.6-SNAPSHOT'
-
-apply from: 'https://raw.githubusercontent.com/bb4/bb4-common/master/bb4.gradle'
-
-project.archivesBaseName = 'Q-learning-ttt'
-mainClassName = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
-
-jar {
-    archiveName = "${archivesBaseName}-${version}.jar"
-    manifest {
-        attributes 'Implementation-Title': 'Q-learning Tic-Tac-Toe code',
-                'Implementation-Version': version,
-                'provider': 'gradle',
-                'Main-Class': mainClassName
-    }
+ext {
+    archivesBaseName = 'Q-learning-ttt'
+    mainClass = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
 }
+apply from: 'https://raw.githubusercontent.com/bb4/bb4-common/master/bb4.gradle'
 
 task runTTT(type: JavaExec) {
     standardInput = System.in
@@ -41,5 +31,4 @@ task runChopsticks(type: JavaExec) {
     group = 'application'
 }
 
-// This allows publishing of the A-star library to Sonatype
 apply from: 'https://raw.githubusercontent.com/bb4/bb4-common/master/bb4-publish.gradle'

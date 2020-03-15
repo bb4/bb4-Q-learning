@@ -3,7 +3,7 @@ package com.barrybecker4.qlearning.chopsticks
 import java.util.Random
 
 import com.barrybecker4.qlearning.common.{ChartDataGenerator, QLearner, QTable, RmsEvaluator}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * From experimentation, its best to have
@@ -11,7 +11,7 @@ import org.scalatest.FunSuite
   * learningRate = 0.8 (but it does not seem to matter much anything in the range 0.7 - 1.0 seems fine)
   * eps = 0.9  (but anything between 0.8 and 0.95 gives similar results)
   */
-class ChopsticksEvaluatorSuite extends FunSuite {
+class ChopsticksEvaluatorSuite extends AnyFunSuite {
 
   private val goldStandard = new QTable(ChopsticksState(), None, epsilon = 0.9, new Random(1))
   private val learner = new QLearner[(Byte, Byte)](.95f, 1.0f)

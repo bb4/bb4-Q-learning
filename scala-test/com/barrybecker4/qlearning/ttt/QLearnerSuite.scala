@@ -1,13 +1,13 @@
 package com.barrybecker4.qlearning.ttt
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import com.barrybecker4.qlearning.TestHelper._
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 import scala.util.Random
 
 
-class QLearnerSuite extends FunSuite {
+class QLearnerSuite extends AnyFunSuite {
 
   val learner = new QLearner[Int]()
   val qtable = new QTable(TTTBoard(), None, epsilon = 0.1, new Random(0))

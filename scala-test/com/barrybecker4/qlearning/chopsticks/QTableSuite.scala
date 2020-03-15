@@ -2,11 +2,11 @@ package com.barrybecker4.qlearning.chopsticks
 
 import com.barrybecker4.qlearning.TestHelper.strip
 import com.barrybecker4.qlearning.common.QTable
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 
-class QTableSuite extends FunSuite {
+class QTableSuite extends AnyFunSuite {
 
   private val stateToCheck = ChopsticksState((1, 3), (2, 2))
 

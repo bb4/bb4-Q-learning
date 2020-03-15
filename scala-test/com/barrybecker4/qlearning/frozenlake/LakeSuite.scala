@@ -1,12 +1,12 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import Direction._
 
 import scala.util.Random
 
 
-class LakeSuite extends FunSuite {
+class LakeSuite extends AnyFunSuite {
 
   test("Basic Construction") {
     val lake = new Lake()

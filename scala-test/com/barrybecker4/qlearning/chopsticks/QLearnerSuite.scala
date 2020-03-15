@@ -2,11 +2,11 @@ package com.barrybecker4.qlearning.chopsticks
 
 import com.barrybecker4.qlearning.TestHelper.strip
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 
-class QLearnerSuite extends FunSuite {
+class QLearnerSuite extends AnyFunSuite {
 
   val learner = new QLearner[(Byte, Byte)](learningRate = 0.8f, futureRewardDiscount = 0.95f)
   val qtable = new QTable(ChopsticksState(), None, epsilon = 0.1, new Random(0))

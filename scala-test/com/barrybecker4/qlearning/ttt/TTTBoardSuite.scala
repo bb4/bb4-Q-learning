@@ -1,11 +1,11 @@
 package com.barrybecker4.qlearning.ttt
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Random
 
 
-class TTTBoardSuite extends FunSuite {
+class TTTBoardSuite extends AnyFunSuite {
 
   test("construct board and serialize") {
     val b = TTTBoard("X......O.")
