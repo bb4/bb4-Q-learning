@@ -1,24 +1,27 @@
 package com.barrybecker4.qlearning.tttminimax
 
-import com.barrybecker4.qlearning.tttminimax.BoardState.{Board, HUMAN, COMPUTER}
+import com.barrybecker4.qlearning.tttminimax.BoardState.{Board, Player}
+import com.barrybecker4.qlearning.tttminimax.BoardState.Player.{HUMAN, COMPUTER}
 import scala.annotation.tailrec
 
 
 object BoardState {
-  val HUMAN = 'X'
-  val COMPUTER = 'O'
+  enum Player(val symbol: Char) {
+    case HUMAN extends Player('X')
+    case COMPUTER extends Player('O')
+  }
   type Board = List[Option[Char]]
 }
 
-case class BoardState(board: Board, player: Char) {
+case class BoardState(board: Board, player: Player) {
 
-  def this(player: Char) = this(List.fill(9)(None), player)
+  def this(player: Player) = this(List.fill(9)(None), player)
 
   def makeHumanMove(position: Int): BoardState =
-    BoardState(board.updated(position, Some(player)), COMPUTER)
+    BoardState(board.updated(position, Some(player.symbol)), COMPUTER)
 
   def makeComputerMove(position: Int): BoardState =
-    BoardState(board.updated(position, Some(player)), HUMAN)
+    BoardState(board.updated(position, Some(player.symbol)), HUMAN)
 
   def getAvailableMoves: List[Int] =
     board.zipWithIndex.collect { case (None, index) => index }
@@ -46,13 +49,13 @@ case class BoardState(board: Board, player: Char) {
   private def serializeRow(row: List[Option[Char]]): String =
     row.map(c => if (c.isDefined) c.get else ".").mkString("[", "", "]") + "\n"
 
-  private def hasPlayerWon(player: Char): Boolean = {
+  private def hasPlayerWon(player: Player): Boolean = {
     val winningPositions = List(
       List(0, 1, 2), List(3, 4, 5), List(6, 7, 8), // Rows
       List(0, 3, 6), List(1, 4, 7), List(2, 5, 8), // Columns
       List(0, 4, 8), List(2, 4, 6) // Diagonals
     )
-    winningPositions.exists(position => position.forall(board(_).contains(player)))
+    winningPositions.exists(position => position.forall(board(_).contains(player.symbol)))
   }
 
   private def noMovesLeft: Boolean = board.forall(_.isDefined)

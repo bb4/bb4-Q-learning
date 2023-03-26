@@ -1,6 +1,6 @@
 package com.barrybecker4.qlearning.tttminimax
 
-import com.barrybecker4.qlearning.tttminimax.BoardState.{COMPUTER, HUMAN}
+import com.barrybecker4.qlearning.tttminimax.BoardState.Player.{COMPUTER, HUMAN}
 import scala.annotation.tailrec
 
 
@@ -40,7 +40,7 @@ object TicTacToe {
     }
   }
 
-  def computerMove(state: BoardState): BoardState = 
+  def computerMove(state: BoardState): BoardState =
     val (bestScore, bestMove) = minimax(state)
     state.makeComputerMove(bestMove)
 
@@ -52,9 +52,9 @@ object TicTacToe {
       val initial = if (state.player == COMPUTER) Int.MaxValue else Int.MinValue
       val (bestScore: Int, bestMove: Int) = availableMoves.foldLeft((initial, -1)) {
         case ((score, move), m) =>
-          val newBoard = state.board.updated(m, Some(state.player))
+          val newBoard = state.board.updated(m, Some(state.player.symbol))
           val (newScore, _) = minimax(BoardState(newBoard, if (state.player == HUMAN) COMPUTER else HUMAN))
-          if (state.player == 'X' && newScore > score || state.player == COMPUTER && newScore < score) (newScore, m)
+          if (state.player == HUMAN && newScore > score || state.player == COMPUTER && newScore < score) (newScore, m)
           else (score, move)
       }
       (bestScore, bestMove)
