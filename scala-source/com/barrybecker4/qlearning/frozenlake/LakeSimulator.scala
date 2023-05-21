@@ -55,10 +55,11 @@ class LakeSimulator {
 
   private def runIndividualSims(): Unit = {
     evaluator = new LakeEvaluator(table, DEFAULT_TEST_TRIALS, MAX_MOVES)
-    do {
+    while {
       val (finalState, numSteps) = evaluator.solve()
       showOutcome(finalState, numSteps)
-    } while (shouldContinue())
+      shouldContinue()
+    } do()
   }
 
   private def runLotsOfSimsAndReport(): Unit = {

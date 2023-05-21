@@ -12,7 +12,7 @@ import scala.math.Ordering.Float.TotalOrdering
   */
 case class LakeState(location: Location, lake: Lake) extends State[Direction]{
 
-  def this(lake: Lake) { this(lake.start, lake) }
+  def this(lake: Lake) = { this(lake.start, lake) }
   def hasTransitions: Boolean = !(lake.isInHole(location) || lake.isGoal(location))
 
   def makeTransition(direction: Direction): LakeState = {
