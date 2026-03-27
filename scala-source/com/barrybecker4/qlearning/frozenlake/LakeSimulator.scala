@@ -3,6 +3,7 @@ package com.barrybecker4.qlearning.frozenlake
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import LakeSimulatorConsts._
+import scala.compiletime.uninitialized
 import scala.util.Random
 
 
@@ -35,8 +36,8 @@ object LakeSimulatorConsts {
 class LakeSimulator {
 
   private val input = new Input()
-  private var table: QTable[Direction] = _
-  private var evaluator: LakeEvaluator = _
+  private var table: QTable[Direction] = uninitialized
+  private var evaluator: LakeEvaluator = uninitialized
 
   def simulate(): Unit = {
     learnHowToSolve()
@@ -55,13 +56,10 @@ class LakeSimulator {
 
   private def runIndividualSims(): Unit = {
     evaluator = new LakeEvaluator(table, DEFAULT_TEST_TRIALS, MAX_MOVES)
-    while {
     var runAgain = true
     while (runAgain) {
       val (finalState, numSteps) = evaluator.solve()
       showOutcome(finalState, numSteps)
-      shouldContinue()
-    } do()
       runAgain = shouldContinue()
     }
   }

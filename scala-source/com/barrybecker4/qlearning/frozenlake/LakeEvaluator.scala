@@ -3,6 +3,7 @@ package com.barrybecker4.qlearning.frozenlake
 import com.barrybecker4.qlearning.common.{Evaluator, QTable}
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 import LakeEvaluator.MAX_MOVES
 import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 
@@ -19,7 +20,7 @@ object LakeEvaluator {
   */
 class LakeEvaluator(table: QTable[Direction], numRuns: Int, maxMoves: Int = MAX_MOVES) extends Evaluator[Direction] {
 
-  private var report: Report = _
+  private var report: Report = uninitialized
 
   class Report {
     val map = mutable.Map("deaths" -> (0, 0), "successes" -> (0, 0), "timeouts" -> (0, 0))

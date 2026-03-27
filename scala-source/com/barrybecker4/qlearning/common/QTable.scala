@@ -103,7 +103,7 @@ case class QTable[T](initialState: State[T],
                        table: mutable.Map[State[T], mutable.Map[T, Float]]): Unit = {
     if (!table.contains(currentState)) {
       val possibleMoves = currentState.getLegalTransitions
-      val moves: mutable.Map[T, Float] = mutable.Map(possibleMoves.map(m => (m, 0.0f)): _*)
+      val moves: mutable.Map[T, Float] = mutable.Map.from(possibleMoves.map(m => (m, 0.0f)))
       //println("adding " + moves.mkString(", ") + " for " + currentState)
       table(currentState) = moves
       for (position <- moves.keys)

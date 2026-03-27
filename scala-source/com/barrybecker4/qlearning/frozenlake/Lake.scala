@@ -100,7 +100,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
   def initialTable(): Map[State[Direction], mutable.Map[Direction, Float]] = {
     (for (i <- 0 until numRows * numColumns)
         yield (LakeState(Location(i / numColumns, i % numColumns), this),
-          mutable.Map(Direction.VALUES.map(d => (d, 0.0f)): _*))
+          mutable.Map.from(Direction.VALUES.map(d => (d, 0.0f))))
       ).toMap
   }
 
