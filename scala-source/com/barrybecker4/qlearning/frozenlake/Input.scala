@@ -3,9 +3,7 @@ package com.barrybecker4.qlearning.frozenlake
 import java.util.Scanner
 
 /** Some convenience methods for gathering input from the user */
-class Input {
-
-  private val scanner: Scanner = new Scanner(System.in)
+class Input(private val scanner: Scanner = new Scanner(System.in)) {
 
   /** @param queryMsg the prompt
     * @param alternatives set of possible responses (lower case)
@@ -38,14 +36,9 @@ class Input {
     }
   }
 
-  private def invalidNum(answer: String, mini: Double, maxi: Double): Boolean = {
-    var num: Double = 0.0
-    try {
-      num = answer.trim.toDouble
-    } catch {
-      case e: NumberFormatException => println(s"bad = $num"); false
-      case _: Throwable => false
+  private def invalidNum(answer: String, mini: Double, maxi: Double): Boolean =
+    answer.trim.toDoubleOption match {
+      case None => true
+      case Some(num) => num < mini || num > maxi
     }
-    num < mini || num > maxi
-  }
 }

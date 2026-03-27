@@ -1,9 +1,7 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import com.barrybecker4.qlearning.common.State
+import com.barrybecker4.qlearning.common.{ActionSelection, State}
 import scala.util.Random
-import Direction.Direction
-import scala.math.Ordering.Float.TotalOrdering
 
 
 /** Immutable state of the lake.
@@ -32,11 +30,8 @@ case class LakeState(location: Location, lake: Lake) extends State[Direction]{
   }
 
   /** @return the best action to take assuming no wind. If more than one best, choose randomly from among them.  */
-  def selectBestAction(actionList: Seq[(Direction, Float)], rnd: Random): (Direction, Float) = {
-    val bestValue = actionList.map(_._2).max
-    val bestActions = actionList.filter(_._2 == bestValue)
-    bestActions(rnd.nextInt(bestActions.length))
-  }
+  def selectBestAction(actionList: Seq[(Direction, Float)], rnd: Random): (Direction, Float) =
+    ActionSelection.pickBest(actionList, maximize = true, rnd)
 
   override def toString: String = s"Location = $location \n${lake.toString(Some(location))}"
 }

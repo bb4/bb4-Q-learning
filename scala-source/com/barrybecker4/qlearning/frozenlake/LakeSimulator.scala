@@ -1,7 +1,7 @@
 package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
-import com.barrybecker4.qlearning.frozenlake.Direction.Direction
+import com.barrybecker4.qlearning.frozenlake.Direction
 import LakeSimulatorConsts._
 import scala.compiletime.uninitialized
 import scala.util.Random
@@ -78,9 +78,7 @@ class LakeSimulator {
 
   private def shouldContinue(): Boolean = input.charQuery("Try to solve again?", Seq('y', 'n')) == 'y'
 
-  private def learnHowToSolve(windFrequency: Double = DEFAULT_WIND_FEQUENCY,
-                              epsilon: Double = DEFAULT_EPSILON,
-                              numTrials: Int = DEFAULT_LEARNING_TRIALS): Unit = {
+  private def learnHowToSolve(): Unit = {
 
     println("How many learning trials (100 - 1000000)?")
     val numTrials = input.getNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
@@ -99,7 +97,7 @@ class LakeSimulator {
 
     val lake = Lake(windFrequency = windFrequency)
     table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
-    val learner = new QLearner[Direction](learningRate = DEFAULT_LEARNING_RATE, futureRewardDiscount = frDiscount)
+    val learner = LakeSimulatorLearning.learnerForHyperparams(learningRate, frDiscount)
 
     print("Learning...")
     learner.learn(table, numTrials)

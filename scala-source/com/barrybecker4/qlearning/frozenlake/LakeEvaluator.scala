@@ -5,7 +5,7 @@ import com.barrybecker4.qlearning.common.{Evaluator, QTable}
 import scala.collection.mutable
 import scala.compiletime.uninitialized
 import LakeEvaluator.MAX_MOVES
-import com.barrybecker4.qlearning.frozenlake.Direction.Direction
+import com.barrybecker4.qlearning.frozenlake.Direction
 
 
 object LakeEvaluator {
@@ -57,7 +57,9 @@ class LakeEvaluator(table: QTable[Direction], numRuns: Int, maxMoves: Int = MAX_
 
   /** @return the final game state when no moves left, and the number of steps it took to get there */
   def solve(verbose: Boolean = true): (LakeState, Int) = {
-    var state: LakeState = table.initialState.asInstanceOf[LakeState]
+    var state: LakeState = table.initialState match
+      case ls: LakeState => ls
+      case other => throw new IllegalStateException(s"Expected LakeState, got ${other.getClass.getName}")
     var ct = 0
 
     while (state.hasTransitions && ct < maxMoves) {

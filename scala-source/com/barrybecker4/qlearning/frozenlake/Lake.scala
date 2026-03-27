@@ -1,6 +1,5 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import com.barrybecker4.qlearning.frozenlake.Direction.Direction
 import Lake.RND
 import com.barrybecker4.qlearning.common.State
 
@@ -8,11 +7,12 @@ import scala.collection.mutable
 import scala.util.Random
 
 
-object Direction extends Enumeration {
-  type Direction = Value
-  val N, S, E, W = Value
-  val VALUES = Seq(N, S, E, W)
-}
+enum Direction:
+  case N, S, E, W
+
+object Direction:
+  /** All directions in fixed order (for wind randomization and Q-table keys). */
+  val valuesSeq: Seq[Direction] = Direction.values.toSeq
 
 case class Location(row: Int, col: Int) {
   def move(dir: Direction): Location = dir match {
@@ -70,27 +70,20 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
 
 
   /** @return the location ended up in after attempting to move from start, in direction dir */
-  def attemptToMoveInDirection(intialLoc: Location, dir: Direction): Location = {
-    var desiredLoc = intialLoc.move(dir)
+  def attemptToMoveInDirection(initialLoc: Location, dir: Direction): Location = {
+    var desiredLoc = initialLoc.move(dir)
     if (rnd.nextDouble() < windFrequency)
-      desiredLoc = desiredLoc.move(Direction.VALUES(rnd.nextInt(4)))  // wind moves you randomly
+      desiredLoc = desiredLoc.move(Direction.valuesSeq(rnd.nextInt(4)))  // wind moves you randomly
     makeInBound(desiredLoc)
   }
 
-  def getLegalTransitionsFrom(loc: Location): Seq[Direction] = {
-    var moves: Seq[Direction] = Seq()
-    if (!(isGoal(loc) || isInHole(loc))) {
-      Direction.VALUES.foreach { d => moves = addIfInBounds(loc.move(d), d, moves) }
-    }
-    moves
-  }
+  def getLegalTransitionsFrom(loc: Location): Seq[Direction] =
+    if isGoal(loc) || isInHole(loc) then Seq.empty
+    else Direction.valuesSeq.filter(d => inBounds(loc.move(d)))
 
   private def makeInBound(loc: Location): Location = {
     Location(Math.min(numRows - 1, Math.max(0, loc.row)), Math.min(numColumns - 1, Math.max(0, loc.col)))
   }
-
-  private def addIfInBounds(candidateLoc: Location, dir: Direction, moves: Seq[Direction]): Seq[Direction] =
-    if (inBounds(candidateLoc)) moves :+ dir else moves
 
   private def inBounds(loc: Location): Boolean =
     loc.row >= 0 && loc.row < numRows && loc.col >= 0 && loc.col < numColumns
@@ -100,7 +93,7 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
   def initialTable(): Map[State[Direction], mutable.Map[Direction, Float]] = {
     (for (i <- 0 until numRows * numColumns)
         yield (LakeState(Location(i / numColumns, i % numColumns), this),
-          mutable.Map.from(Direction.VALUES.map(d => (d, 0.0f))))
+          mutable.Map.from(Direction.valuesSeq.map(d => (d, 0.0f))))
       ).toMap
   }
 

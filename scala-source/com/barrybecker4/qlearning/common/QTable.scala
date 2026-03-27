@@ -46,7 +46,6 @@ case class QTable[T](initialState: State[T],
   /** @return the best transition from the current state, from point of view of current player */
   def getBestMove(b: State[T]): (T, Float) = {
     val actionsList = table(b).toSeq
-    //println("the possible actions are " + actionsList.mkString(", "))
     b.selectBestAction(actionsList, rnd)
   }
 
@@ -57,8 +56,8 @@ case class QTable[T](initialState: State[T],
     */
   def getNextAction(s: State[T], episodeNumber: Int): (T, Float) = {
     val actions = table(s)
-    val actionList: List[(T, Float)] =
-      actions.toList.map(entry => (entry._1, entry._2))
+    val actionList: List[(T, Float)] = actions.toList
+    require(actionList.nonEmpty, "state must have at least one action in the Q-table")
 
     val eps = epsilon + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
     if (rnd.nextDouble() < eps) actionList(rnd.nextInt(actionList.length)) // purely random action
@@ -77,10 +76,6 @@ case class QTable[T](initialState: State[T],
     val futureValue = if (nextActions.isEmpty) 0.0f else nextState.selectBestAction(nextActions.toSeq, rnd)._2
     val reward = nextState.rewardForLastMove
     val newValue = action._2 + learningRate * ((reward + futureRewardDiscount * futureValue) - action._2)
-//    if (newValue != 0) {
-//      println(s"newValue=$newValue (act_2=${action._2} + lr=$learningRate *((rew=$reward + " +
-//        s"frd=$futureRewardDiscount * futureVal=$futureValue) - act_2=action._2) \n  for state $state and action $action")
-//    }
     table(state) += (action._1 -> newValue)  // update
   }
 
@@ -92,9 +87,7 @@ case class QTable[T](initialState: State[T],
   /** @return a map from all possible states to a map of possible actions to their expected value */
   private def createInitializedTable(initialState: State[T]): Map[State[T], mutable.Map[T, Float]] = {
     val table = mutable.Map[State[T], mutable.Map[T, Float]]()
-    println("find all states starting from " + initialState)
     traverse(initialState, table)
-    println("found " + table.size + " unique states.")
     table.map(entry => (entry._1, entry._2)).toMap // make immutable
   }
 
@@ -104,7 +97,6 @@ case class QTable[T](initialState: State[T],
     if (!table.contains(currentState)) {
       val possibleMoves = currentState.getLegalTransitions
       val moves: mutable.Map[T, Float] = mutable.Map.from(possibleMoves.map(m => (m, 0.0f)))
-      //println("adding " + moves.mkString(", ") + " for " + currentState)
       table(currentState) = moves
       for (position <- moves.keys)
         traverse(currentState.makeTransition(position), table)

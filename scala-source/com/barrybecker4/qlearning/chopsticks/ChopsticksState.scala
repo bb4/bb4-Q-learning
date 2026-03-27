@@ -1,11 +1,10 @@
 package com.barrybecker4.qlearning.chopsticks
 
 import com.barrybecker4.qlearning.chopsticks.ChopsticksState.{DONE_STATE, TransType}
-import com.barrybecker4.qlearning.common.State
+import com.barrybecker4.qlearning.common.{ActionSelection, State}
 
 import scala.util.Random
 import ChopsticksState.NUM_FINGERS_PER_HAND
-import scala.math.Ordering.Float.TotalOrdering
 
 
 object ChopsticksState {
@@ -101,16 +100,7 @@ case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
   /** @return the best action to take from the perspective of the current player.
     *  If more than one best, choose randomly from among them.
     */
-  override def selectBestAction(actionList: Seq[(TransType, Float)], rnd: Random): (TransType, Float) = {
-    //implicit val order: Double.TotalOrdering.type = Ordering.Double.TotalOrdering
-    import scala.math.Ordering.Float.TotalOrdering
-    val bestValue1 = Seq[Float](0.3f, 0.5f, 0.1f, 0.8f).min
-
-    val bestValue =
-      if (isFirstPlayerMove) actionList.map(_._2).max
-      else actionList.map(_._2).min
-    val bestActions = actionList.filter(_._2 == bestValue)
-    bestActions(rnd.nextInt(bestActions.length))
-  }
+  override def selectBestAction(actionList: Seq[(TransType, Float)], rnd: Random): (TransType, Float) =
+    ActionSelection.pickBest(actionList, maximize = isFirstPlayerMove, rnd)
   override def toString: String = s"First player fingers: $firstHands.  Second player fingers: $secondHands"
 }

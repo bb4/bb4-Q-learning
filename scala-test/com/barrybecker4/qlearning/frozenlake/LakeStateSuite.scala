@@ -1,7 +1,7 @@
 package com.barrybecker4.qlearning.frozenlake
 
 import org.scalatest.funsuite.AnyFunSuite
-import Direction._
+import Direction.*
 
 import scala.util.Random
 

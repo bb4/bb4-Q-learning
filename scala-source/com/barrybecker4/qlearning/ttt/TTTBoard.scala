@@ -1,8 +1,7 @@
 package com.barrybecker4.qlearning.ttt
 
-import com.barrybecker4.qlearning.common.State
+import com.barrybecker4.qlearning.common.{ActionSelection, State}
 import scala.util.Random
-import scala.math.Ordering.Float.TotalOrdering
 
 /** Immutable tic-tac-toe board state and its operations.
   * Currently the size of the QTable is 5,478, but could be reduced by a factor of 8 by taking advantage of symmetry.
@@ -56,11 +55,8 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') exten
   /** @return the best action to take from the perspective of the current player.
     *  If more than one best, choose randomly from among them.
     */
-  def selectBestAction(actionList: Seq[(Int, Float)], rnd: Random): (Int, Float) = {
-    val bestValue = if (playerToMove == 'X') actionList.map(_._2).max else actionList.map(_._2).min
-    val bestActions = actionList.filter(_._2 == bestValue)
-    bestActions(rnd.nextInt(bestActions.length))
-  }
+  def selectBestAction(actionList: Seq[(Int, Float)], rnd: Random): (Int, Float) =
+    ActionSelection.pickBest(actionList, maximize = playerToMove == 'X', rnd)
 
   private def nextPlayerToMove = if (playerToMove == 'X') 'O' else 'X'
   private def checkForWin(winStr: String, idx1: Int, idx2: Int, idx3: Int): Boolean =
