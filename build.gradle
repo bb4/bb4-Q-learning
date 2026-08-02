@@ -5,7 +5,7 @@ plugins {
 
 description = 'Q-learning for Tic-Tac-Toe'
 group = 'com.barrybecker4'
-version = '2.0-SNAPSHOT'
+version = '2.0.0'
 
 bb4 {
     archivesBaseName.set('Q-learning-ttt')
