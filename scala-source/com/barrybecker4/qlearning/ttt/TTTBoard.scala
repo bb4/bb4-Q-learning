@@ -32,13 +32,11 @@ case class TTTBoard(state: String = ".........", playerToMove: Char = 'X') exten
 
   def isWon(player: Char): Boolean = {
     val winStr = "" + player + player + player
-    for (i <- 0 until 3) {
+    (0 until 3).exists { i =>
       val idx = 3 * i
-      if (checkForWin(winStr, idx, idx + 1, idx + 2)) return true
-      if (checkForWin(winStr, i, i + 3, i + 6)) return true
-    }
-    if (checkForWin(winStr, 0, 4, 8)) return true
-    checkForWin(winStr, 2, 4, 6)
+      checkForWin(winStr, idx, idx + 1, idx + 2) ||
+        checkForWin(winStr, i, i + 3, i + 6)
+    } || checkForWin(winStr, 0, 4, 8) || checkForWin(winStr, 2, 4, 6)
   }
 
   def getLegalTransitions: Seq[Int] = {

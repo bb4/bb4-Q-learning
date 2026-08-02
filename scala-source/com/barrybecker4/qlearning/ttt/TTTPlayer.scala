@@ -4,10 +4,12 @@ import java.util.Scanner
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 
-object TTTPlayer extends App {
-  val gamePlayer = new TTTPlayer()
-  println("Let's play Tic-Tac-Toe!")
-  gamePlayer.playGameAgainstHuman()
+object TTTPlayer {
+  def main(args: Array[String]): Unit = {
+    val gamePlayer = new TTTPlayer()
+    println("Let's play Tic-Tac-Toe!")
+    gamePlayer.playGameAgainstHuman()
+  }
 }
 
 /** Text based tic-tac-toe player.

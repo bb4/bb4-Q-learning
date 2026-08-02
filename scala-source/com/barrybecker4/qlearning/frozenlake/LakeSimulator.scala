@@ -7,14 +7,15 @@ import scala.compiletime.uninitialized
 import scala.util.Random
 
 
-object LakeSimulator extends App {
-
-  val simulator = new LakeSimulator()
-  println("Let's simulate the frozen lake problem.")
-  println("Starting from S, try to retrieve the frisbee at G while avoiding holes (H) ")
-  println(s"and being mindful of the random wind, " +
-    s"which can occasionally blow you in a random direction.\n")
-  simulator.simulate()
+object LakeSimulator {
+  def main(args: Array[String]): Unit = {
+    val simulator = new LakeSimulator()
+    println("Let's simulate the frozen lake problem.")
+    println("Starting from S, try to retrieve the frisbee at G while avoiding holes (H) ")
+    println(s"and being mindful of the random wind, " +
+      s"which can occasionally blow you in a random direction.\n")
+    simulator.simulate()
+  }
 }
 
 object LakeSimulatorConsts {

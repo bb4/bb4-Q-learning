@@ -5,10 +5,12 @@ import ChopsticksState.TransType
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 
-object ChopsticksPlayer extends App {
-  val gamePlayer = new ChopsticksPlayer()
-  println("Let's play Finger-Chopsticks!")
-  gamePlayer.playGameAgainstHuman()
+object ChopsticksPlayer {
+  def main(args: Array[String]): Unit = {
+    val gamePlayer = new ChopsticksPlayer()
+    println("Let's play Finger-Chopsticks!")
+    gamePlayer.playGameAgainstHuman()
+  }
 }
 
 /** Text based finger-chopsticks game player. First learn, then play.
