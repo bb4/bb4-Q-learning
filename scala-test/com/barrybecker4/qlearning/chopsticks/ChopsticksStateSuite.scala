@@ -34,52 +34,51 @@ class ChopsticksStateSuite extends AnyFunSuite {
   }
 
   test("make move 21 which wins") {
-    var b = ChopsticksState((0, 4), (1, 0))
-    b = b.makeTransition((2, 1))
+    val b = ChopsticksState((0, 4), (1, 0)).makeTransition((2, 1))
     assertResult(true) {b.isWon(true)}
   }
 
   test("make split move when 0 4") {
-    var b = ChopsticksState((0, 4), (1, 0))
+    val b = ChopsticksState((0, 4), (1, 0))
     assertResult("First player fingers: (2,2).  Second player fingers: (1,0)") {b.makeTransition((2, 0)).toString}
   }
 
   test("make split move when 3 1") {
-    var b = ChopsticksState((3, 1), (1, 0))
+    val b = ChopsticksState((3, 1), (1, 0))
     assertResult("First player fingers: (2,2).  Second player fingers: (1,0)") {b.makeTransition((2, 0)).toString}
   }
 
   test("make split move when 3 2 (not allowed)") {
-    var b = ChopsticksState((3, 2), (1, 0))
+    val b = ChopsticksState((3, 2), (1, 0))
     assertThrows[AssertionError]{b.makeTransition((2, 0))}
   }
 
   test("hasMoves when some") {
-    var b = ChopsticksState((2, 1), (0, 1))
+    val b = ChopsticksState((2, 1), (0, 1))
     assertResult(true) {b.hasTransitions}
   }
 
   test("hasMoves when none") {
-    var b = ChopsticksState((0, 0), (1, 1))
+    val b = ChopsticksState((0, 0), (1, 1))
     assertResult(false) {b.hasTransitions}
   }
 
   test("getReward when not won") {
-    var b = ChopsticksState((2, 3), (3, 2))
+    val b = ChopsticksState((2, 3), (3, 2))
     assertResult(0f) {b.rewardForLastMove}
     b.makeTransition((2, 1))
     assertResult(0f) {b.rewardForLastMove}
   }
 
   test("getReward when player 1 won") {
-    var b = ChopsticksState((1, 0), (0, 4))
-    assertResult(0.0f) {b.rewardForLastMove}
-    b = b.makeTransition((1, 2))
+    val b0 = ChopsticksState((1, 0), (0, 4))
+    assertResult(0.0f) {b0.rewardForLastMove}
+    val b = b0.makeTransition((1, 2))
     assertResult(1.0f) {b.rewardForLastMove}
   }
 
   test("getReward when won") {
-    var b = ChopsticksState((0, 0), (1, 1))
+    val b = ChopsticksState((0, 0), (1, 1))
     assertResult(-1.0f) {b.rewardForLastMove}
   }
 
@@ -91,7 +90,7 @@ class ChopsticksStateSuite extends AnyFunSuite {
   }
 
   test("played already when played") {
-    var b = ChopsticksState((1, 0), (0, 4))
+    val b = ChopsticksState((1, 0), (0, 4))
     assertThrows[AssertionError] {b.makeTransition((2, 2))}
   }
 }

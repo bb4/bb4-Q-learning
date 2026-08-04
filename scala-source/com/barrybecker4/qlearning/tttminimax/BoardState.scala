@@ -2,7 +2,6 @@ package com.barrybecker4.qlearning.tttminimax
 
 import com.barrybecker4.qlearning.tttminimax.BoardState.{Board, Player}
 import com.barrybecker4.qlearning.tttminimax.BoardState.Player.{HUMAN, COMPUTER}
-import scala.annotation.tailrec
 
 
 object BoardState {

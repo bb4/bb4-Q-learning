@@ -109,17 +109,13 @@ class LakeEvaluatorSuite extends AnyFunSuite {
                      learningRate: Float = DEFAULT_LEARNING_RATE,
                      frd: Float = DEFAULT_FUTURE_REWARD_DISCOUNT, lake: Lake = LARGE_WINDY_7x10_LAKE): Float = {
     val trials = 20
-    var sumError: Double = 0
-
-    for (i <- 1 to trials) {
+    val sumError = (1 to trials).map { _ =>
       val table =
         new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = eps, RND)
       val learner = new QLearner[Direction](learningRate, frd)
       learner.learn(table, numEpisodes = numRuns)
-
-      val evaluator = new LakeEvaluator(table, numRuns = 200, maxMoves = 500)
-      sumError += evaluator.evaluate()
-    }
+      new LakeEvaluator(table, numRuns = 200, maxMoves = 500).evaluate()
+    }.sum
 
     (sumError / trials).toFloat
   }
