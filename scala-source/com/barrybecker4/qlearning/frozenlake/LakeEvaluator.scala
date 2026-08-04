@@ -1,75 +1,44 @@
 package com.barrybecker4.qlearning.frozenlake
 
 import com.barrybecker4.qlearning.common.{Evaluator, QTable}
-
-import scala.collection.mutable
-import scala.compiletime.uninitialized
 import LakeEvaluator.MAX_MOVES
-import com.barrybecker4.qlearning.frozenlake.Direction
 
 
-object LakeEvaluator {
+object LakeEvaluator:
   /** give up if not solved in this many moves */
   val MAX_MOVES = 1000
-}
 
 
 /** @param table the qtable to evaluate the performance of
   * @param numRuns the number of test trials. The more the better the accuracy
   * @param maxMoves max moves before timing out and declaring unsuccessful.
   */
-class LakeEvaluator(table: QTable[Direction], numRuns: Int, maxMoves: Int = MAX_MOVES) extends Evaluator[Direction] {
+class LakeEvaluator(table: QTable[Direction], numRuns: Int, maxMoves: Int = MAX_MOVES)
+    extends Evaluator[Direction]:
 
-  private var report: Report = uninitialized
+  private var report: Option[LakeEvaluationReport] = None
 
-  class Report {
-    val map = mutable.Map("deaths" -> (0, 0), "successes" -> (0, 0), "timeouts" -> (0, 0))
+  def evaluate(): Double =
+    val r = LakeEvaluationReport.run(() => solve(verbose = false), numRuns)
+    report = Some(r)
+    r.getError
 
-    for (i <- 0 until numRuns) {
-      val (finalState, numSteps) = solve(verbose = false)
-      val endState = if (finalState.isGoalReached) "successes"
-      else if (finalState.isInHole) "deaths"
-      else "timeouts"
-
-      val value = map(endState)
-      map(endState) = (value._1 + 1, value._2 + numSteps)
-    }
-
-    def getError: Double = 1.0 - map("successes")._1 / numRuns.toDouble
-
-    override def toString: String = {
-      s"Error = $getError \n" +
-      Seq("successes", "deaths", "timeouts").map( v => {
-        val num = map(v)._1
-        val avg = if (num == 0) 0 else map(v)._2 / num
-        s"Num $v = $num  average steps = $avg"
-      }).mkString("\n")
-    }
-  }
-
-  def evaluate(): Double = {
-    report = new Report
-    report.getError
-  }
-
-  /** call after evaluate is called to get more info */
-  def getReport: String = report.toString
+  /** Call after evaluate is called to get more info. */
+  def getReport: String =
+    report.map(_.toString).getOrElse:
+      throw new IllegalStateException("evaluate() must be called before getReport")
 
   /** @return the final game state when no moves left, and the number of steps it took to get there */
-  def solve(verbose: Boolean = true): (LakeState, Int) = {
+  def solve(verbose: Boolean = true): (LakeState, Int) =
     var state: LakeState = table.initialState match
       case ls: LakeState => ls
       case other => throw new IllegalStateException(s"Expected LakeState, got ${other.getClass.getName}")
     var ct = 0
 
-    while (state.hasTransitions && ct < maxMoves) {
-      if (verbose) {
+    while state.hasTransitions && ct < maxMoves do
+      if verbose then
         println(s"------------  step: $ct")
         println(state.toString)
-      }
       state = state.makeTransition(table.getBestMove(state)._1)
       ct += 1
-    }
     (state, ct)
-  }
-}
