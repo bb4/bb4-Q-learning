@@ -88,7 +88,7 @@ case class QTable[T](initialState: State[T],
   private def createInitializedTable(initialState: State[T]): Map[State[T], mutable.Map[T, Float]] = {
     val table = mutable.Map[State[T], mutable.Map[T, Float]]()
     traverse(initialState, table)
-    table.map(entry => (entry._1, entry._2)).toMap // make immutable
+    table.toMap
   }
 
   /** Recursively traverse all possible board states using DFS. */
