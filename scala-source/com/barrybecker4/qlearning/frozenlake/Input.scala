@@ -3,19 +3,18 @@ package com.barrybecker4.qlearning.frozenlake
 import java.util.Scanner
 
 /** Some convenience methods for gathering input from the user */
-class Input(private val scanner: Scanner = new Scanner(System.in)) {
+class Input(private val scanner: Scanner = new Scanner(System.in)):
 
   /** @param queryMsg the prompt
     * @param alternatives set of possible responses (lower case)
     * @return given a prompt return one of several specified upper case characters from the user
     */
-  def charQuery(queryMsg: String, alternatives: Seq[Character], default: Option[Character] = None): Character = {
-    val theDefault = if (default.isDefined) default.get else alternatives.head
+  def charQuery(queryMsg: String, alternatives: Seq[Character], default: Option[Character] = None): Character =
+    val theDefault = default.getOrElse(alternatives.head)
     println(queryMsg + " " + alternatives.mkString("(", "/", ")"))
     print(s"[$theDefault]:")
     val answer = scanner.nextLine()
-    if (answer.isEmpty) theDefault else answer.head.toLower
-  }
+    if answer.isEmpty then theDefault else answer.head.toLower
 
   /**
     * @param default default value to use if one not provided
@@ -23,22 +22,18 @@ class Input(private val scanner: Scanner = new Scanner(System.in)) {
     * @param max maximum allowed
     * @return the user specified number.
     */
-  def getNumber(default: Double, min: Double, max: Double): Double = {
+  def getNumber(default: Double, min: Double, max: Double): Double =
     print(s"[${default.toFloat}]")
-    var answer = scanner.nextLine()
-    if (answer.isEmpty) default
-    else {
-      while (invalidNum(answer, min, max)) {
+    val first = scanner.nextLine()
+    if first.isEmpty then default
+    else
+      var answer = first
+      while invalidNum(answer, min, max) do
         println(s"Invalid number '$answer'. Enter a number between $min and $max, inclusive.")
         answer = scanner.nextLine()
-      }
       answer.toDouble
-    }
-  }
 
   private def invalidNum(answer: String, mini: Double, maxi: Double): Boolean =
-    answer.trim.toDoubleOption match {
+    answer.trim.toDoubleOption match
       case None => true
       case Some(num) => num < mini || num > maxi
-    }
-}
