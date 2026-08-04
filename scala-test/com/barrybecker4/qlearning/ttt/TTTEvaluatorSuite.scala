@@ -3,6 +3,7 @@ package com.barrybecker4.qlearning.ttt
 import java.util.Random
 
 import com.barrybecker4.qlearning.common.{QLearner, QTable, RmsEvaluator}
+import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.funsuite.AnyFunSuite
 
 
@@ -14,6 +15,9 @@ import org.scalatest.funsuite.AnyFunSuite
   */
 class TTTEvaluatorSuite extends AnyFunSuite {
 
+  /** Math.sqrt in RmsEvaluator may differ in the last bit across JVMs; only StrictMath is bit-identical. */
+  implicit val doubleEq: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-9)
+
   private val goldStandard = new QTable(TTTBoard(), None, epsilon = 0.9, new Random(1))
   private val learner = new QLearner[Int](learningRate = 0.8f, futureRewardDiscount = 1.0f)
   learner.learn(goldStandard, 1000000)
@@ -21,94 +25,93 @@ class TTTEvaluatorSuite extends AnyFunSuite {
 
 
   test("evaluate ttt: eps = 0.3, runs = 50") {
-    assertResult(0.8950898407190325) { doEval(0.3, 50) }
+    assert(0.8950898407190325 === doEval(0.3, 50))
   }
 
   test("evaluate ttt: eps = 0.1 runs = 500") {
-    assertResult(0.8817548205341939) { doEval(0.1, 500) }
+    assert(0.8817548205341939 === doEval(0.1, 500))
   }
 
   test("evaluate ttt: eps = 0.3, runs = 5000") {
-    assertResult(0.7381020134189465) { doEval(0.3, 5000) }
+    assert(0.7381020134189465 === doEval(0.3, 5000))
   }
 
   test("evaluate ttt: eps = 0.1 runs = 5000") {
-    assertResult(0.742327008002397) { doEval(0.1, 5000) }
+    assert(0.742327008002397 === doEval(0.1, 5000))
   }
 
   test(s"evaluate ttt: eps = 0.4, runs = 100000 learningRate=0.9") {
-    assertResult(0.172922081103319) { doEval(0.4, 100000, learningRate = 0.9f ) }
+    assert(0.172922081103319 === doEval(0.4, 100000, learningRate = 0.9f))
   }
   test(s"evaluate ttt: eps = 0.8, runs = 100000 ") {
-    assertResult(0.003036032810401645) { doEval(0.8, 100000 ) }
+    assert(0.003036032810401645 === doEval(0.8, 100000))
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 ") {
-    assertResult(9.993831398032048E-5) { doEval(0.9, 100000 ) }
+    assert(9.993831398032048E-5 === doEval(0.9, 100000))
   }
   test(s"evaluate ttt: eps = 0.99, runs = 100000 ") {
-    assertResult( 1.3428868824026785E-4) { doEval(0.99, 100000 ) }
+    assert(1.3428868824026785E-4 === doEval(0.99, 100000))
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.4") {
-    assertResult(0.01376660617984976) { doEval(0.9, 100000, learningRate = 0.4f ) }
+    assert(0.01376660617984976 === doEval(0.9, 100000, learningRate = 0.4f))
   }
   /*
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.6") {
-    assertResult(0.0013632256561776786) { doEval(0.9, 100000, learningRate = 0.6f ) }
+    assert(0.0013632256561776786 === doEval(0.9, 100000, learningRate = 0.6f))
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.8") {
-    assertResult(1.0095078758163613E-4) { doEval(0.9, 100000, learningRate = 0.8f ) }
+    assert(1.0095078758163613E-4 === doEval(0.9, 100000, learningRate = 0.8f))
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 0.9") {
-    assertResult(1.7663773026035155E-5) { doEval(9.0, 100000, learningRate = 0.9f ) }
+    assert(1.7663773026035155E-5 === doEval(9.0, 100000, learningRate = 0.9f))
   }
   test(s"evaluate ttt: eps = 0.9, runs = 100000 learningRate = 1.0") {
-    assertResult(0.0) { doEval(9.0, 100000, learningRate = 1.0f ) }
+    assert(0.0 === doEval(9.0, 100000, learningRate = 1.0f))
   }
   test(s"evaluate ttt: eps = 1.0, runs = 100000 learningRate = 1.0") {
-    assertResult(0.0) { doEval(1.0, 100000, learningRate = 1.0f ) }
+    assert(0.0 === doEval(1.0, 100000, learningRate = 1.0f))
   }
   test(s"evaluate ttt: eps = 1.0, runs = 100000 learningRate=1.0 frd=0.9") {
-    assertResult(0.12667115151916478) {
-      doEval(1.0, 100000, learningRate = 1.0f , futureRewardDiscount = 0.9f)
-    }
+    assert(0.12667115151916478 ===
+      doEval(1.0, 100000, learningRate = 1.0f, futureRewardDiscount = 0.9f))
   }*/
 
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS ") {
-    assertResult(0.48519802707809007) { doEval(0.3, TRIALS ) }
+    assert(0.48519802707809007 === doEval(0.3, TRIALS))
   }
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=0.9") {
-    assertResult(0.4699262661940876) { doEval(0.3, TRIALS, learningRate = 0.9f ) }
+    assert(0.4699262661940876 === doEval(0.3, TRIALS, learningRate = 0.9f))
   }
   test(s"evaluate ttt: eps = 0.3, runs = $TRIALS learningRate=1.0") {
-    assertResult(0.46826683568834904) { doEval(0.3, TRIALS, learningRate = 1.0f ) }
+    assert(0.46826683568834904 === doEval(0.3, TRIALS, learningRate = 1.0f))
   }
 
   test(s"evaluate ttt: eps = 0.4, runs = $TRIALS ") {
-    assertResult(0.4508351348186567) { doEval(0.4, TRIALS ) }
+    assert(0.4508351348186567 === doEval(0.4, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 0.5, runs = $TRIALS ") {
-    assertResult(0.4070558295003606) { doEval(0.5, TRIALS ) }
+    assert(0.4070558295003606 === doEval(0.5, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 0.6, runs = $TRIALS") {
-    assertResult(0.37852552055271804) { doEval(0.6, TRIALS ) }
+    assert(0.37852552055271804 === doEval(0.6, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 0.7, runs = $TRIALS ") {
-    assertResult(0.34356752354968684) { doEval(0.7, TRIALS ) }
+    assert(0.34356752354968684 === doEval(0.7, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 0.8, runs = $TRIALS ") {
-    assertResult(0.3118899265235139) { doEval(0.8, TRIALS ) }
+    assert(0.3118899265235139 === doEval(0.8, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 0.9, runs = $TRIALS ") {
-    assertResult(0.317812028658438) { doEval(0.9, TRIALS ) }
+    assert(0.317812028658438 === doEval(0.9, TRIALS))
   }
 
   test(s"evaluate ttt: eps = 1.0, runs = $TRIALS ") {
-    assertResult(0.33184374324555915) { doEval(1.0, TRIALS ) }
+    assert(0.33184374324555915 === doEval(1.0, TRIALS))
   }
 
   /* data for plot. takes long time. *
