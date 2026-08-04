@@ -1,24 +1,21 @@
 package com.barrybecker4.qlearning.frozenlake
 
-import com.barrybecker4.qlearning.common.{QLearner, QTable}
-import com.barrybecker4.qlearning.frozenlake.Direction
+import com.barrybecker4.qlearning.common.QTable
 import LakeSimulatorConsts._
-import scala.compiletime.uninitialized
 import scala.util.Random
 
 
-object LakeSimulator {
-  def main(args: Array[String]): Unit = {
+object LakeSimulator:
+  def main(args: Array[String]): Unit =
     val simulator = new LakeSimulator()
     println("Let's simulate the frozen lake problem.")
     println("Starting from S, try to retrieve the frisbee at G while avoiding holes (H) ")
     println(s"and being mindful of the random wind, " +
       s"which can occasionally blow you in a random direction.\n")
     simulator.simulate()
-  }
-}
 
-object LakeSimulatorConsts {
+
+object LakeSimulatorConsts:
   /** give up if not solved in this many moves */
   val MAX_MOVES = 1000
   val DEFAULT_WIND_FEQUENCY = 0.1
@@ -29,58 +26,45 @@ object LakeSimulatorConsts {
   val DEFAULT_FUTURE_REWARD_DISCOUNT = 0.7f
   val MAX_TEST_TRIALS = 100000
 
-}
 
 /** Text based lake simulator.
   * First learn, then simulate.
   */
-class LakeSimulator {
+class LakeSimulator:
 
   private val input = new Input()
-  private var table: QTable[Direction] = uninitialized
-  private var evaluator: LakeEvaluator = uninitialized
 
-  def simulate(): Unit = {
-    learnHowToSolve()
+  def simulate(): Unit =
+    val table = learnHowToSolve()
+    if shouldRunIndividualSims() then runIndividualSims(table)
+    else runLotsOfSimsAndReport(table)
 
-    if (shouldRunIndividualSims()) {
-      runIndividualSims()
-    } else {
-      runLotsOfSimsAndReport()
-    }
-  }
-
-  private def shouldRunIndividualSims(): Boolean = {
+  private def shouldRunIndividualSims(): Boolean =
     val msg = "Do you want to run simulations one at a time (1) or do many and report the results (m)?"
     input.charQuery(msg, Seq('1', 'm')) == '1'
-  }
 
-  private def runIndividualSims(): Unit = {
-    evaluator = new LakeEvaluator(table, DEFAULT_TEST_TRIALS, MAX_MOVES)
+  private def runIndividualSims(table: QTable[Direction]): Unit =
+    val evaluator = new LakeEvaluator(table, DEFAULT_TEST_TRIALS, MAX_MOVES)
     var runAgain = true
-    while (runAgain) {
+    while runAgain do
       val (finalState, numSteps) = evaluator.solve()
       showOutcome(finalState, numSteps)
       runAgain = shouldContinue()
-    }
-  }
 
-  private def runLotsOfSimsAndReport(): Unit = {
+  private def runLotsOfSimsAndReport(table: QTable[Direction]): Unit =
     val numRuns = getNumRuns
-    evaluator = new LakeEvaluator(table, numRuns, MAX_MOVES)
+    val evaluator = new LakeEvaluator(table, numRuns, MAX_MOVES)
     evaluator.evaluate()
     println(evaluator.getReport)
-  }
 
-  private def getNumRuns: Int = {
+  private def getNumRuns: Int =
     println(s"How many simulations do you want to run [1 - $MAX_TEST_TRIALS]?")
     input.getNumber(DEFAULT_TEST_TRIALS, 1, MAX_TEST_TRIALS).toInt
-  }
 
-  private def shouldContinue(): Boolean = input.charQuery("Try to solve again?", Seq('y', 'n')) == 'y'
+  private def shouldContinue(): Boolean =
+    input.charQuery("Try to solve again?", Seq('y', 'n')) == 'y'
 
-  private def learnHowToSolve(): Unit = {
-
+  private def learnHowToSolve(): QTable[Direction] =
     println("How many learning trials (100 - 1000000)?")
     val numTrials = input.getNumber(DEFAULT_LEARNING_TRIALS, 100, 1000000).toInt
 
@@ -97,21 +81,19 @@ class LakeSimulator {
     val frDiscount: Float = input.getNumber(DEFAULT_FUTURE_REWARD_DISCOUNT, 0.0, 1.0).toFloat
 
     val lake = Lake(windFrequency = windFrequency)
-    table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
+    val table = new QTable[Direction](new LakeState(lake), Some(lake.initialTable()), epsilon = epsilon, new Random(1L))
     val learner = LakeSimulatorLearning.learnerForHyperparams(learningRate, frDiscount)
 
     print("Learning...")
     learner.learn(table, numTrials)
     println("...I just learned how to solve.\n")
-  }
+    table
 
-  private def showOutcome(finalState: LakeState, numSteps: Int): Unit = {
+  private def showOutcome(finalState: LakeState, numSteps: Int): Unit =
     println("\n" + finalState.toString)
-    if (finalState.isGoalReached)
+    if finalState.isGoalReached then
       println(s"*** Congratulations - you found the frisbee after $numSteps steps! ***")
-    else if (finalState.isInHole)
+    else if finalState.isInHole then
       println("*** You fell in a hole and drowned while searching :( ***")
     else
       println(s"*** You could not find it after searching for $MAX_MOVES moves ****")
-  }
-}
