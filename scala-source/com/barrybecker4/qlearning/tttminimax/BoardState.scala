@@ -47,7 +47,7 @@ case class BoardState(board: Board, player: Player) {
   }
 
   private def serializeRow(row: List[Option[Char]]): String =
-    row.map(c => if (c.isDefined) c.get else ".").mkString("[", "", "]") + "\n"
+    row.map(c => c.getOrElse('.')).mkString("[", "", "]") + "\n"
 
   private def hasPlayerWon(player: Player): Boolean = {
     val winningPositions = List(

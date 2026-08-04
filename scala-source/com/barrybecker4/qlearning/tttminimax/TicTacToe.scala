@@ -32,7 +32,7 @@ object TicTacToe {
   private def humanMove(state: BoardState): BoardState = {
     println("Your move! Enter a number from 1 to 9 to make your move:")
     val position = scala.io.StdIn.readInt() - 1
-    if (position < 0 || position > 8 || state._1(position).isDefined) {
+    if (position < 0 || position > 8 || state.board(position).isDefined) {
       println("Invalid move. Please choose an empty space.")
       humanMove(state)
     } else {
