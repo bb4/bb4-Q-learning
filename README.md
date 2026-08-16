@@ -1,6 +1,6 @@
 # Q-learning
 
-📊 [Build status for all bb4 projects](https://github.com/bb4)
+📊 [Build status for all bb4 projects](https://github.com/bb4/.github)
 
 [Q-Learning](https://medium.com/emergent-future/simple-reinforcement-learning-with-tensorflow-part-0-q-learning-with-tables-and-neural-networks-d195264329d0) is a strategy for reinforcement learning.
 This project is a generic Q-learning library that can be applied to a variety of domains.
