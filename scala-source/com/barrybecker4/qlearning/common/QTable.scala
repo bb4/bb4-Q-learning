@@ -18,6 +18,10 @@ object QTable {
   /** The larger this value, the more slowly epsilon decreases (i.e. the probability of making random moves) */
   private val EPS_DROPOFF = 5.0f
 
+  /** Exploration probability for the given episode (used by [[QTable.getNextAction]]). */
+  def effectiveEpsilon(epsilon: Double, episodeNumber: Int): Double =
+    epsilon + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
+
 }
 
 /**
@@ -59,7 +63,7 @@ case class QTable[T](initialState: State[T],
     val actionList: List[(T, Float)] = actions.toList
     require(actionList.nonEmpty, "state must have at least one action in the Q-table")
 
-    val eps = epsilon + EPS_DROPOFF / (episodeNumber + EPS_DROPOFF)
+    val eps = QTable.effectiveEpsilon(epsilon, episodeNumber)
     if (rnd.nextDouble() < eps) actionList(rnd.nextInt(actionList.length)) // purely random action
     else s.selectBestAction(actionList, rnd) // select randomly from actions with best value
   }
