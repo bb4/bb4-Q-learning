@@ -41,4 +41,22 @@ class LakeSuite extends AnyFunSuite {
     assertResult(Location(0, 3)) {lake.attemptToMoveInDirection(Location(0, 3), E)}
     assertResult(Location(0, 1)) {lake.attemptToMoveInDirection(Location(0, 3), W)}
   }
+
+  test("initialTable actions match getLegalTransitionsFrom") {
+    val lake = new Lake()
+    val sampleLocations = List(
+      lake.start,
+      Location(1, 2),
+      Location(0, 0),
+      Location(3, 2),
+      lake.holes.head,
+      lake.goal
+    )
+    val table = lake.initialTable()
+    for loc <- sampleLocations do
+      val state = LakeState(loc, lake)
+      val fromState = state.getLegalTransitions.toSet
+      val fromTable = table(state).keySet
+      assertResult(fromState) { fromTable }
+  }
 }

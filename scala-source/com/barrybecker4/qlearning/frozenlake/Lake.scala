@@ -84,12 +84,13 @@ case class Lake(numRows: Int = 4, numColumns: Int = 4,
   private def inBounds(loc: Location): Boolean =
     loc.row >= 0 && loc.row < numRows && loc.col >= 0 && loc.col < numColumns
 
-  /** @return all states and transactions from them */
+  /** @return all states and actions from them (aligned with [[LakeState.getLegalTransitions]]). */
   def initialTable(): Map[State[Direction], mutable.Map[Direction, Float]] =
-    (for i <- 0 until numRows * numColumns
-      yield (LakeState(Location(i / numColumns, i % numColumns), this),
-        mutable.Map.from(Direction.valuesSeq.map(d => (d, 0.0f))))
-      ).toMap
+    (for i <- 0 until numRows * numColumns yield
+      val loc = Location(i / numColumns, i % numColumns)
+      val state = LakeState(loc, this)
+      state -> mutable.Map.from(state.getLegalTransitions.map(d => d -> 0.0f))
+    ).toMap
 
   def toString(currentLoc: Option[Location]): String =
     val sb = new StringBuilder

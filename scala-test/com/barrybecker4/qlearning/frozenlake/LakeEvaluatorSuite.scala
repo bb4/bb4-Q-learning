@@ -32,26 +32,26 @@ class LakeEvaluatorSuite extends AnyFunSuite {
 
 
   test(s"evaluate windy Lake: eps = 0.6, runs = 1000 ") {
-    assertResult(0.0925f) { doEval(0.6, 1000, lake = LARGE_WINDY_7x10_LAKE) }
+    assertResult(0.0755f) { doEval(0.6, 1000, lake = LARGE_WINDY_7x10_LAKE) }
   }
   test(s"evaluate calm Lake: eps = 0.6, runs = 1000 ") {
-    assertResult(0.06025f) { doEval(0.6, 1000, lake = LARGE_CALM_7x10_LAKE) }
+    assertResult(0.03475f) { doEval(0.6, 1000, lake = LARGE_CALM_7x10_LAKE) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 1000 learningRate = 0.6") {
-    assertResult(0.1105f) { doEval(0.6, learningRate = 0.6f, numRuns = 1000 ) }
+    assertResult(0.10825f) { doEval(0.6, learningRate = 0.6f, numRuns = 1000 ) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 10000 learningRate = 0.6") {
-    assertResult(0.1705f) { doEval(0.6, learningRate = 0.6f, numRuns = 10000 ) }
+    assertResult(0.11075f) { doEval(0.6, learningRate = 0.6f, numRuns = 10000 ) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 1000 learningRate = 0.4 ") {
-    assertResult(0.0905f) { doEval(0.6, learningRate = 0.4f, numRuns = 1000 ) }
+    assertResult(0.10675f) { doEval(0.6, learningRate = 0.4f, numRuns = 1000 ) }
   }
 
   test(s"evaluate Lake: eps = 0.6, runs = 10000 learningRate = 0.4") {
-    assertResult(0.0885f) { doEval(0.6, learningRate = 0.4f, numRuns = 10000 ) }
+    assertResult(0.109f) { doEval(0.6, learningRate = 0.4f, numRuns = 10000 ) }
   }
 
   /*
