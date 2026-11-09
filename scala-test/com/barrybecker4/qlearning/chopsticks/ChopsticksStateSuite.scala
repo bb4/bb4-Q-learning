@@ -93,4 +93,12 @@ class ChopsticksStateSuite extends AnyFunSuite {
     val b = ChopsticksState((1, 0), (0, 4))
     assertThrows[AssertionError] {b.makeTransition((2, 2))}
   }
+
+  test("no legal tap on inactive opponent hand") {
+    val state = ChopsticksState((1, 1), (0, 3))
+    val legal = state.getLegalTransitions
+    assert(!legal.contains((1, 1)))
+    assert(!legal.contains((2, 1)))
+    assert(legal.contains((1, 2)))
+  }
 }

@@ -68,6 +68,9 @@ case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
     val ownFingersToAdd: Byte = if (transition._1 == 1) srcHands._1 else srcHands._2
     assert(ownFingersToAdd > 0, "You cannot tap with an inactive hand.")
 
+    val destFingers = if (oppHandIdx == 1) destHands._1 else destHands._2
+    assert(destFingers > 0, "An inactive hand cannot be tapped.")
+
     val newOppsHands =
       if (oppHandIdx == 1) ((destHands._1 + ownFingersToAdd).toByte, destHands._2)
       else (destHands._1, (destHands._2 + ownFingersToAdd).toByte)
@@ -84,10 +87,19 @@ case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
   /** @return all legal transitions from the current state */
   override def getLegalTransitions: Seq[TransType] = {
     val hands = if (isFirstPlayerMove) firstHands else secondHands
+    val oppHands = if (isFirstPlayerMove) secondHands else firstHands
     val sumFingers = hands._1 + hands._2
     val splitTransition = if (hands._1 != hands._2 && sumFingers % 2 == 0) Seq((1.toByte, 0.toByte)) else Seq()
-    val firstHandMoves = if (hands._1 != 0) Seq((1.toByte, 1.toByte), (1.toByte, 2.toByte)) else Seq()
-    val secondHandMoves = if (hands._2 != 0) Seq((2.toByte, 1.toByte), (2.toByte, 2.toByte)) else Seq()
+    val firstHandMoves =
+      if (hands._1 != 0)
+        Seq((1.toByte, 1.toByte)).filter(_ => oppHands._1 != 0) ++
+          Seq((1.toByte, 2.toByte)).filter(_ => oppHands._2 != 0)
+      else Seq.empty
+    val secondHandMoves =
+      if (hands._2 != 0)
+        Seq((2.toByte, 1.toByte)).filter(_ => oppHands._1 != 0) ++
+          Seq((2.toByte, 2.toByte)).filter(_ => oppHands._2 != 0)
+      else Seq.empty
     splitTransition ++ firstHandMoves ++ secondHandMoves
   }
 
