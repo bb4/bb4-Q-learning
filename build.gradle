@@ -12,28 +12,28 @@ bb4 {
     mainClass.set('com.barrybecker4.qlearning.ttt.TTTPlayer')
 }
 
-task runTTT(type: JavaExec) {
+tasks.register('runTTT', JavaExec) {
     standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.barrybecker4.qlearning.ttt.TTTPlayer'
     group = 'application'
 }
 
-task runFrozenLake(type: JavaExec) {
+tasks.register('runFrozenLake', JavaExec) {
     standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.barrybecker4.qlearning.frozenlake.LakeSimulator'
     group = 'application'
 }
 
-task runChopsticks(type: JavaExec) {
+tasks.register('runChopsticks', JavaExec) {
     standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.barrybecker4.qlearning.chopsticks.ChopsticksPlayer'
     group = 'application'
 }
 
-task runTttMinimax(type: JavaExec) {
+tasks.register('runTttMinimax', JavaExec) {
     standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'com.barrybecker4.qlearning.tttminimax.TicTacToe'
