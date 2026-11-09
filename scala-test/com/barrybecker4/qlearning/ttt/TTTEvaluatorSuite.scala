@@ -16,7 +16,7 @@ import org.scalatest.funsuite.AnyFunSuite
 class TTTEvaluatorSuite extends AnyFunSuite {
 
   /** Math.sqrt in RmsEvaluator may differ in the last bit across JVMs; only StrictMath is bit-identical. */
-  implicit val doubleEq: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-9)
+  given doubleEq: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-9)
 
   private val goldStandard = new QTable(TTTBoard(), None, epsilon = 0.9, new Random(1))
   private val learner = new QLearner[Int](learningRate = 0.8f, futureRewardDiscount = 1.0f)

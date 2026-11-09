@@ -1,7 +1,7 @@
 package com.barrybecker4.qlearning.chopsticks
 
 import java.util.Scanner
-import ChopsticksState.TransType
+import ChopsticksAction.{Split, Tap}
 import com.barrybecker4.qlearning.common.{QLearner, QTable}
 
 
@@ -17,8 +17,8 @@ object ChopsticksPlayer:
   */
 class ChopsticksPlayer:
 
-  private val table: QTable[TransType] = new QTable(ChopsticksState(), None, epsilon = 0.3)
-  private val learner = new QLearner[TransType](learningRate = 0.8f, futureRewardDiscount = 0.99f)
+  private val table: QTable[ChopsticksAction] = new QTable(ChopsticksState(), None, epsilon = 0.3)
+  private val learner = new QLearner[ChopsticksAction](learningRate = 0.8f, futureRewardDiscount = 0.99f)
   private val scanner = new Scanner(System.in)
 
   def playGameAgainstHuman(): Unit =
@@ -56,24 +56,22 @@ class ChopsticksPlayer:
       s"The first digit is your hand to use for tapping ($handOpts),\n" +
       "and the second digit is the hand to be tapped " +
       s"($handOpts for one of their hands, or 0 for your own other hand): ")
-    var action = getAction(scanner.nextInt())
+    var action = ChopsticksAction.fromInput(scanner.nextInt())
     while !ChopsticksMoveValidator.isValid(action, state, humanGoesFirst) do
       println("Invalid. Try again.")
-      action = getAction(scanner.nextInt())
+      action = ChopsticksAction.fromInput(scanner.nextInt())
     state.makeTransition(action)
 
   private def doComputerMove(state: ChopsticksState): ChopsticksState =
     println("The choices are: " + table.getActions(state))
     val computerMove = table.getBestMove(state)._1
-    if computerMove._2 == 0 then
-      println("The computer taps its own hand and does a split.")
-    else
-      println(s"The computer chooses to tap your hand #${computerMove._2} with its hand #${computerMove._1}.")
+    computerMove match
+      case Split => println("The computer taps its own hand and does a split.")
+      case Tap(own, opp) =>
+        println(s"The computer chooses to tap your hand #$opp with its hand #$own.")
     state.makeTransition(computerMove)
 
   private def showOutcome(finalState: ChopsticksState, computerMovedLast: Boolean): Unit =
     println("\n" + finalState.toString)
     if computerMovedLast then println("*** You lost! Better luck next time ***")
     else println("*** Congratulations - you won! ***")
-
-  private def getAction(input: Int): TransType = ((input / 10).toByte, (input % 10).toByte)

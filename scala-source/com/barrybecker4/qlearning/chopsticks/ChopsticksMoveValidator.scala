@@ -1,34 +1,27 @@
 package com.barrybecker4.qlearning.chopsticks
 
-import ChopsticksState.TransType
+import ChopsticksAction.{Split, Tap}
 
 /** Validates human move input for finger-chopsticks. */
 private[chopsticks] object ChopsticksMoveValidator:
 
-  private val validInputs: Set[TransType] =
-    (for i <- 1 to 2; j <- 0 to 2 yield (i.toByte, j.toByte)).toSet
+  def isValid(action: ChopsticksAction, state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
+    action match
+      case Split => validSplit(state, humanGoesFirst)
+      case tap: Tap => validTap(tap, state, humanGoesFirst)
 
-  def isValid(action: TransType, state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
-    validInputs.contains(action) &&
-      validSplitIfSplit(action, state, humanGoesFirst) &&
-      !inactiveHandTapped(action, state, humanGoesFirst)
-
-  private def validSplitIfSplit(action: TransType, state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
+  private def validSplit(state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
     val hands = if humanGoesFirst then state.firstHands else state.secondHands
-    val v = action._2 != 0 || (hands._1 + hands._2) % 2 == 0
+    val v = (hands._1 + hands._2) % 2 == 0 && hands._1 != hands._2
     if !v then println("You can't split if you do not have an even sum of fingers!")
     v
 
-  private def inactiveHandTapped(action: TransType, state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
-    if action._2 == 0 then return false // self tap of inactive hand is ok to do split
+  private def validTap(tap: Tap, state: ChopsticksState, humanGoesFirst: Boolean): Boolean =
     val (h1, h2) =
       if humanGoesFirst then (state.firstHands, state.secondHands)
       else (state.secondHands, state.firstHands)
-    val inactiveTapped = action match
-      case (1, 1) => h1._1 == 0 || h2._1 == 0
-      case (2, 1) => h1._2 == 0 || h2._1 == 0
-      case (1, 2) => h1._1 == 0 || h2._2 == 0
-      case (2, 2) => h1._2 == 0 || h2._2 == 0
-      case _ => false
-    if inactiveTapped then println("An inactive hand cannot tap or be tapped")
-    inactiveTapped
+    val ownFingers = if tap.ownHand == 1 then h1._1 else h1._2
+    val oppFingers = if tap.opponentHand == 1 then h2._1 else h2._2
+    val inactive = ownFingers == 0 || oppFingers == 0
+    if inactive then println("An inactive hand cannot tap or be tapped")
+    !inactive && tap.ownHand >= 1 && tap.ownHand <= 2 && tap.opponentHand >= 1 && tap.opponentHand <= 2

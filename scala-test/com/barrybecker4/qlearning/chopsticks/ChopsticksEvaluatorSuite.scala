@@ -15,59 +15,59 @@ import org.scalatest.funsuite.AnyFunSuite
 class ChopsticksEvaluatorSuite extends AnyFunSuite {
 
   /** Math.sqrt in RmsEvaluator may differ in the last bit across JVMs; only StrictMath is bit-identical. */
-  implicit val doubleEq: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-9)
+  given doubleEq: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-9)
 
   private val goldStandard = new QTable(ChopsticksState(), None, epsilon = 0.9, new Random(1))
-  private val learner = new QLearner[(Byte, Byte)](.95f, 1.0f)
+  private val learner = new QLearner[ChopsticksAction](.95f, 1.0f)
   learner.learn(goldStandard, 1000000)
 
 
   test("evaluate chopsticks: eps = 0.3, runs = 50") {
-    assert(0.7282194248632798 === doEval(0.3, 50))
+    assert(0.7423179250951814 === doEval(0.3, 50))
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 500") {
-    assert(0.6490735916036947 === doEval(0.1, 500))
+    assert(0.6390911628970404 === doEval(0.1, 500))
   }
 
   test("evaluate chopsticks: eps = 0.3, runs = 5000") {
-    assert(0.3467494861956071 === doEval(0.3, 5000))
+    assert(0.3736772176773048 === doEval(0.3, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.4, runs = 5000") {
-    assert(0.3149084939610007 === doEval(0.4, 5000))
+    assert(0.37073912694892647 === doEval(0.4, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.5, runs = 5000") {
-    assert(0.2604145598080305 === doEval(0.5, 5000))
+    assert(0.3565686543264575 === doEval(0.5, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.7, runs = 5000") {
-    assert(0.19613598299626517 === doEval(0.7, 5000))
+    assert(0.31804301726954115 === doEval(0.7, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.9, runs = 5000") {
-    assert(0.14769597319628783 === doEval(0.9, 5000))
+    assert(0.32020545989375854 === doEval(0.9, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 5000") {
-    assert(0.42645091778230876 === doEval(0.1, 5000))
+    assert(0.41940460430659965 === doEval(0.1, 5000))
   }
 
   test("evaluate chopsticks: eps = 0.1 runs = 10000") {
-    assert(0.3812735970189622 === doEval(0.1, 10000))
+    assert(0.3763218587233667 === doEval(0.1, 10000))
   }
 
   test("evaluate chopsticks: eps = 0.4 runs = 10000") {
-    assert(0.22505485060640595 === doEval(0.4, 10000))
+    assert(0.29566454939242726 === doEval(0.4, 10000))
   }
 
   test("evaluate chopsticks: eps = 0.6 runs = 10000") {
-    assert(0.12035791477132503 === doEval(0.6, 10000))
+    assert(0.2702876862835808 === doEval(0.6, 10000))
   }
 
   test("evaluate chopsticks: eps = 0.8 runs = 10000") {
-    assert(0.0644372003576509 === doEval(0.8, 10000))
+    assert(0.22602883061120713 === doEval(0.8, 10000))
   }
 /*
   test("evaluate chopsticks: eps = 0.95 runs = 10000") {
@@ -92,11 +92,11 @@ class ChopsticksEvaluatorSuite extends AnyFunSuite {
   }
 */
   test("evaluate chopsticks: eps = 0.6 runs = 100000, learningRate = 0.95") {
-    assert(4.0499788335011155E-5 === doEval(0.6, 100000, learningRate = 0.95f))
+    assert(0.07553116914748674 === doEval(0.6, 100000, learningRate = 0.95f))
   }
 
   test("evaluate chopsticks: eps = 0.6 runs = 100000, learningRate = 1.0") {
-    assert(0.0 === doEval(0.6, 100000, learningRate = 1.0f))
+    assert(0.07537780529294419 === doEval(0.6, 100000, learningRate = 1.0f))
   }
 
 
@@ -116,7 +116,7 @@ class ChopsticksEvaluatorSuite extends AnyFunSuite {
                      learningRate: Float = QLearner.DEFAULT_LEARNING_RATE,
                      frd: Float = QLearner.DEFAULT_FUTURE_REWARD_DISCOUNT): Double = {
     val table = new QTable(ChopsticksState(), None, eps, new Random(1))
-    val learner = new QLearner[(Byte, Byte)](learningRate,  futureRewardDiscount = frd)
+    val learner = new QLearner[ChopsticksAction](learningRate,  futureRewardDiscount = frd)
     learner.learn(table, numRuns)
     val evaluator = new RmsEvaluator(table, goldStandard)
     evaluator.evaluate()

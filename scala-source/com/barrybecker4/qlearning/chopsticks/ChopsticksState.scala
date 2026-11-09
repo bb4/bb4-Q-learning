@@ -1,118 +1,95 @@
 package com.barrybecker4.qlearning.chopsticks
 
-import com.barrybecker4.qlearning.chopsticks.ChopsticksState.{DONE_STATE, TransType}
+import ChopsticksAction.{Split, Tap}
+import com.barrybecker4.qlearning.chopsticks.ChopsticksState.DONE_STATE
 import com.barrybecker4.qlearning.common.{ActionSelection, State}
 
 import scala.util.Random
-import ChopsticksState.NUM_FINGERS_PER_HAND
 
 
-object ChopsticksState {
-
-  /** First number is the hand that is tapping (1 .. NUM_HANDS_PER_PERSON).
-    * The second number is the hand being tapped (opponent hand (1 .. NUM_HANDS_PER_PERSON), or own other hand 0).
-    */
-  type TransType = (Byte, Byte)
-
-  /** You can try learning with other than 5 fingers per hand if we want */
-  private val NUM_FINGERS_PER_HAND = 5
+object ChopsticksState:
 
   /** If one player reaches this state (no fingers on either hand), then the other playe has won */
   private val DONE_STATE = (0, 0)
-}
+
+  /** You can try learning with other than 5 fingers per hand if we want */
+  private val NUM_FINGERS_PER_HAND = 5
 
 /**
   * Always from the point of view of the player moving next
   */
 case class ChopsticksState(firstHands: (Byte, Byte) = (1, 1),
                            secondHands: (Byte, Byte) = (1, 1),
-                           isFirstPlayerMove: Boolean = true) extends State[TransType]{
+                           isFirstPlayerMove: Boolean = true) extends State[ChopsticksAction]:
 
   def isWon(player1: Boolean): Boolean =
-    if (player1) secondHands == DONE_STATE else firstHands == DONE_STATE
+    if player1 then secondHands == DONE_STATE else firstHands == DONE_STATE
 
   /** @return true if at least one valid transition from this state */
   override def hasTransitions: Boolean =
     firstHands != DONE_STATE && secondHands != DONE_STATE
 
-  /** Apply a transition to this state to make a new one.
-    * @param transition A tuple where the first number is the players hand doing the tapping, and the second is the
-    * opponent hand to tap (or self tap if 0).
-    */
-  override def makeTransition(transition: TransType): ChopsticksState = {
-    transition._2 match {
-      case 0 => doSelfSplit(transition)
-      case oppHandIdx: Byte => tapOpponent(transition, oppHandIdx)
-    }
-  }
+  override def makeTransition(action: ChopsticksAction): ChopsticksState =
+    action match
+      case Split => doSelfSplit()
+      case Tap(ownHand, oppHand) => tapOpponent(ownHand, oppHand)
 
-  private def doSelfSplit(transition: TransType): ChopsticksState ={
-    if (isFirstPlayerMove) ChopsticksState(doHandSplit(firstHands), secondHands, !isFirstPlayerMove)
+  private def doSelfSplit(): ChopsticksState =
+    if isFirstPlayerMove then ChopsticksState(doHandSplit(firstHands), secondHands, !isFirstPlayerMove)
     else ChopsticksState(firstHands, doHandSplit(secondHands), !isFirstPlayerMove)
-  }
 
-  private def doHandSplit(hands: (Byte, Byte)): (Byte, Byte) ={
+  private def doHandSplit(hands: (Byte, Byte)): (Byte, Byte) =
     val sum = hands._1 + hands._2
     assert(sum % 2 == 0, "Did not have an even sum of fingers!")
     val selfAvgFingers = (sum / 2).toByte
     (selfAvgFingers, selfAvgFingers)
-  }
 
-  private def tapOpponent(transition: TransType, oppHandIdx: Byte): ChopsticksState = {
-    if (isFirstPlayerMove) doHandTap(transition, firstHands, secondHands, oppHandIdx)
-    else doHandTap(transition, secondHands, firstHands, oppHandIdx)
-  }
+  private def tapOpponent(ownHand: Byte, oppHandIdx: Byte): ChopsticksState =
+    if isFirstPlayerMove then doHandTap(ownHand, firstHands, secondHands, oppHandIdx)
+    else doHandTap(ownHand, secondHands, firstHands, oppHandIdx)
 
-  private def doHandTap(transition: TransType, srcHands: TransType, destHands: TransType,
-                        oppHandIdx: Byte): ChopsticksState = {
-    val ownFingersToAdd: Byte = if (transition._1 == 1) srcHands._1 else srcHands._2
+  private def doHandTap(ownHand: Byte, srcHands: (Byte, Byte), destHands: (Byte, Byte),
+                        oppHandIdx: Byte): ChopsticksState =
+    val ownFingersToAdd: Byte = if ownHand == 1 then srcHands._1 else srcHands._2
     assert(ownFingersToAdd > 0, "You cannot tap with an inactive hand.")
 
-    val destFingers = if (oppHandIdx == 1) destHands._1 else destHands._2
+    val destFingers = if oppHandIdx == 1 then destHands._1 else destHands._2
     assert(destFingers > 0, "An inactive hand cannot be tapped.")
 
     val newOppsHands =
-      if (oppHandIdx == 1) ((destHands._1 + ownFingersToAdd).toByte, destHands._2)
+      if oppHandIdx == 1 then ((destHands._1 + ownFingersToAdd).toByte, destHands._2)
       else (destHands._1, (destHands._2 + ownFingersToAdd).toByte)
 
     val (src, newDest) =
-      if (newOppsHands._1 >= NUM_FINGERS_PER_HAND) (srcHands, (0.toByte, newOppsHands._2))
-      else if (newOppsHands._2 >= NUM_FINGERS_PER_HAND) (srcHands, (newOppsHands._1, 0.toByte))
+      if newOppsHands._1 >= ChopsticksState.NUM_FINGERS_PER_HAND then (srcHands, (0.toByte, newOppsHands._2))
+      else if newOppsHands._2 >= ChopsticksState.NUM_FINGERS_PER_HAND then (srcHands, (newOppsHands._1, 0.toByte))
       else (srcHands, newOppsHands)
 
-    if (isFirstPlayerMove) ChopsticksState(src, newDest, false)
+    if isFirstPlayerMove then ChopsticksState(src, newDest, false)
     else ChopsticksState(newDest, src, true)
-  }
 
-  /** @return all legal transitions from the current state */
-  override def getLegalTransitions: Seq[TransType] = {
-    val hands = if (isFirstPlayerMove) firstHands else secondHands
-    val oppHands = if (isFirstPlayerMove) secondHands else firstHands
+  override def getLegalTransitions: Seq[ChopsticksAction] =
+    val hands = if isFirstPlayerMove then firstHands else secondHands
+    val oppHands = if isFirstPlayerMove then secondHands else firstHands
     val sumFingers = hands._1 + hands._2
-    val splitTransition = if (hands._1 != hands._2 && sumFingers % 2 == 0) Seq((1.toByte, 0.toByte)) else Seq()
+    val splitTransition =
+      if hands._1 != hands._2 && sumFingers % 2 == 0 then Seq(Split) else Seq.empty
     val firstHandMoves =
-      if (hands._1 != 0)
-        Seq((1.toByte, 1.toByte)).filter(_ => oppHands._1 != 0) ++
-          Seq((1.toByte, 2.toByte)).filter(_ => oppHands._2 != 0)
+      if hands._1 != 0 then
+        Seq(Tap(1, 1)).filter(_ => oppHands._1 != 0) ++ Seq(Tap(1, 2)).filter(_ => oppHands._2 != 0)
       else Seq.empty
     val secondHandMoves =
-      if (hands._2 != 0)
-        Seq((2.toByte, 1.toByte)).filter(_ => oppHands._1 != 0) ++
-          Seq((2.toByte, 2.toByte)).filter(_ => oppHands._2 != 0)
+      if hands._2 != 0 then
+        Seq(Tap(2, 1)).filter(_ => oppHands._1 != 0) ++ Seq(Tap(2, 2)).filter(_ => oppHands._2 != 0)
       else Seq.empty
     splitTransition ++ firstHandMoves ++ secondHandMoves
-  }
 
-  /** @return the amount of reward for the transition to this state from the point of view of the first player */
   override def rewardForLastMove: Float =
-    if (isWon(true)) 1
-    else if (isWon(false)) -1
+    if isWon(true) then 1
+    else if isWon(false) then -1
     else 0
 
-  /** @return the best action to take from the perspective of the current player.
-    *  If more than one best, choose randomly from among them.
-    */
-  override def selectBestAction(actionList: Seq[(TransType, Float)], rnd: Random): (TransType, Float) =
+  override def selectBestAction(actionList: Seq[(ChopsticksAction, Float)], rnd: Random): (ChopsticksAction, Float) =
     ActionSelection.pickBest(actionList, maximize = isFirstPlayerMove, rnd)
+
   override def toString: String = s"First player fingers: $firstHands.  Second player fingers: $secondHands"
-}
