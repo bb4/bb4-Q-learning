@@ -7,6 +7,7 @@ This project is a generic Q-learning library that can be applied to a variety of
  
 Example implementations are provided for Tic-Tac-Toe, Frozen Lake, and Finger Chopsticks. 
 Each demonstrates how Q-learning can be used to find an optimal strategy to maximize result when the state space is relatively small.
+A separate minimax Tic-Tac-Toe demo (`tttminimax`) lives alongside the Q-learning examples as a non-RL baseline for comparison.
 Tic-Tac-Toe, for example, is a simple game with only a few thousand possible states (fewer if you account for symmetry). 
 For domains where the domains are much greater, some sort of approximation to the actual set of states can be used - 
 like a neural net for example.
@@ -20,6 +21,7 @@ cd bb4-Q-learning                                      (move into the new local 
 ./gradlew runTTT                                       (to play Tic-Tac-Toe)
 ./gradlew runFrozenLake                                (to run the Frozen Lake demo)
 ./gradlew runChopsticks                                (to play finger chopsticks)
+./gradlew runTttMinimax                                (unbeatable minimax tic-tac-toe baseline, not Q-learning)
 ```
 
 ## Learn More

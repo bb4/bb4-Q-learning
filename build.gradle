@@ -32,3 +32,10 @@ task runChopsticks(type: JavaExec) {
     mainClass = 'com.barrybecker4.qlearning.chopsticks.ChopsticksPlayer'
     group = 'application'
 }
+
+task runTttMinimax(type: JavaExec) {
+    standardInput = System.in
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.barrybecker4.qlearning.tttminimax.TicTacToe'
+    group = 'application'
+}
