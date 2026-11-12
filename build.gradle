@@ -1,6 +1,6 @@
 plugins {
-    id 'com.barrybecker4.bb4.scala-library' version '3.0-SNAPSHOT'
-    id 'com.barrybecker4.bb4.publish' version '3.0-SNAPSHOT'
+    alias(bb4Libs.plugins.scala.library)
+    alias(bb4Libs.plugins.publish)
 }
 
 description = 'Generic Q-learning library with Tic-Tac-Toe, Frozen Lake, and Finger Chopsticks examples'
